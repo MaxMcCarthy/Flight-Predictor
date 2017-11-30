@@ -333,7 +333,8 @@ def get_fig_2(origin, date):
 
     for carrier in airline:
         airline[carrier][1]
-        
+        print()
+
     print(airline)
     fig, ax = plt.subplots()
     ax.bar(range(len(airline)), airline.values())
