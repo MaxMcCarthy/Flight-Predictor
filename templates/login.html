@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h3>Log In</h3>
+    <form action = "{{ url_for('login') }}" method = "POST">
+        User Name
+        <input type="text" name="username"><br>
+        Password
+        <input type="password" name="password"><br>
+        <input type="submit" value="Login">
+        <button onclick="location.href='{{ url_for('create_user') }}'" type="button">Create New User</button>
+    </form>
+
+</body>
+</html>

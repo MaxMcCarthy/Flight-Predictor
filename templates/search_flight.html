@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action = "{{ url_for('search_flight') }}" method = "POST">
+        <h3>Search A Flight</h3>
+        <br>Airline
+        <input type = "text" name = "airline" placeholder="Airline"><br>
+
+        <br>Origin Airport
+        <input type = "text" name = "origin_airport"><br>
+
+        <br>Date of Departure
+        <input type = "datetime-local" name = "dept_date"><br>
+
+        <input type = "submit" value = "Search" /><br>
+    </form>
+
+    {% if results != None %}
+    <h3>Based on similar flights and your flight information, your flight has a {{ p_val }}% chance of being delayed.</h3>
+
+    <div>
+        <h3>Similar Flights</h3>
+        <table style="width:100%">
+            <tr>
+                <th>Airline</th>
+                <th>Origin</th>
+                <th>Departure</th>
+                <th>Delayed</th>
+            </tr>
+            {% for result in results %}
+                <tr>
+                    <td>{{ result[1] }}</td>
+                    <td>{{ result[2] }}</td>
+                    <td>{{ result[5] }}/{{ result[6] }}/{{ result[4] }} at {{ result[7] }}:{% if result[8] < 10 %}0{% endif %}{{ result[8] }}</td>
+                    <td>{% if result[7] == 0 or result[7] == "None" %}No{% else %}Yes{% endif %}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div>
+            <img src="{{ url_for('get_fig', origin=data['origin'], airline=data['airline'], date=data['date']) }}">
+    </div>
+    <div>
+            <img src="{{ url_for('get_fig_2', origin=data['origin'], date=data['date']) }}">
+    </div>
+    {% endif %}
+</body>
+</html>
