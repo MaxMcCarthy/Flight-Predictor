@@ -290,13 +290,14 @@ def get_fig(origin, airline, date):
         if counts[i] > 0:
             value[i] /= counts[i]
 
-    plt.plot(list(range(24)), value)
-    plt.ylabel('Minutes')
-    plt.xlabel('Hour')
+    fig, ax = plt.subplots()
+    ax.plot(list(range(24)), value)
+    ax.set_ylabel('Minutes')
+    ax.set_xlabel('Hour')
     title = "Average Delay By Hour At " + origin + " Flying " + airline
-    plt.title(title)
+    ax.set_title(title)
     img = io.BytesIO()
-    plt.savefig(img, format='png')
+    fig.savefig(img, format='png')
     img.seek(0)
 
     return send_file(img, mimetype="image/png")
@@ -337,7 +338,7 @@ def get_fig_2(origin, date):
     ax.bar(airline.keys(), airline.values())
     ax.set_ylabel('Minutes')
     ax.set_xlabel('Airline')
-    title = "Average Delay By Airline At " + origin
+    title = "Average Delay By Airline At " + origin + ' On ' + str(day) + '/' + str(month)
     ax.set_title(title)
     img1 = io.BytesIO()
     fig.savefig(img1, format='png')
@@ -359,36 +360,32 @@ def get_fig_3(origin, airline, date):
     window = 4
     results = get_flights_in_window(window, day, month, year, origin, airline)
     n = (2 * window) - 1
-    value = [0] * n
-    counts = [0] * n
-    airline = {}
+    airline_dict = {}
 
     fig, ax = plt.subplots()
 
     for res in results:
         if res[9] != 'NA' and type(res[10]) is int:
             delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
-            day = res[6]
-            #value[day] += delay
-            #counts[day] += 1
-            if day not in airline:
-                airline[day] = [0, 0]
-            airline[day][0] += delay
-            airline[day][1] += 1
+            day = str(res[6])
+            if day not in airline_dict:
+                airline_dict[day] = [0, 0]
+            airline_dict[day][0] += delay
+            airline_dict[day][1] += 1
 
-    for carrier in airline:
-        airline[carrier] = airline[carrier][0]/airline[carrier][1]
+    for carrier in airline_dict:
+        airline_dict[carrier] = airline_dict[carrier][0]/airline_dict[carrier][1]
 
-    ax.bar(airline.keys(), airline.values())
+    ax.bar(airline_dict.keys(), airline_dict.values())
     ax.set_ylabel('Minutes')
-    ax.set_xlabel('Airline')
-    title = "Average Delay By Airline At " + origin
+    ax.set_xlabel('Day')
+    title = "Average Delay By Day At " + origin + ' flying ' + airline
     ax.set_title(title)
-    img1 = io.BytesIO()
-    fig.savefig(img1, format='png')
-    img1.seek(0)
+    img2 = io.BytesIO()
+    fig.savefig(img2, format='png')
+    img2.seek(0)
 
-    return send_file(img1, mimetype="image/png")
+    return send_file(img2, mimetype="image/png")
 
 
 if __name__ == '__main__':
