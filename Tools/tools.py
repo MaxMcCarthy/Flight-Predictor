@@ -86,12 +86,11 @@ def calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min):
         day -= 1
 
         if day < days_in_month:
-            day = get_days_in_month(month-1, year)
             month -= 1
-
             if month < 1:
                 month = 12
                 year -= 1
+            day = get_days_in_month(month, year)
 
     time2 = datetime.datetime(year, month, day, act_hour, act_min)
 

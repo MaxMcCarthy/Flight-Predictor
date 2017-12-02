@@ -47,6 +47,9 @@
     <div>
             <img src="{{ url_for('get_fig_2', origin=data['origin'], date=data['date']) }}">
     </div>
+    <div>
+            <img src="{{ url_for('get_fig_3', origin=data['origin'], airline=data['airline'], date=data['date']) }}">
+    </div>
     {% endif %}
 </body>
 </html>
