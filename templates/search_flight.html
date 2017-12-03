@@ -20,7 +20,8 @@
     </form>
 
     {% if results != None %}
-    <h3>Based on similar flights and your flight information, your flight has a {{ p_val }}% chance of being delayed.</h3>
+    <h3>Based on similar flights and your flight information, your flight will be delayed by {{ p_val }} minutes.</h3>
+    <h3>{{ data['date'] }}</h3>
 
     <div>
         <h3>Similar Flights</h3>
