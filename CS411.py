@@ -168,8 +168,13 @@ def create_user():
 
         cur.execute('''INSERT INTO user (username, password)
                  VALUES (?, ?)''', (user_name, pw))
+        # conn.commit()
+        # cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
+        cur.execute('''CREATE TRIGGER after_insert AFTER INSERT ON user
+                       BEGIN
+                       SELECT user_id FROM user WHERE username=user_name AND password=pw;
+                       END;''')
         conn.commit()
-        cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
         rows = cur.fetchone()
         print(rows)
         return redirect(url_for('add_flight', userId=rows[0]))
