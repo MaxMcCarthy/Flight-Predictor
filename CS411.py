@@ -1,5 +1,4 @@
 import base64
-from StringIO import StringIO
 from io import BytesIO
 
 import io
