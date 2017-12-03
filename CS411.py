@@ -246,20 +246,21 @@ def search_flight():
 
         results = get_flights_in_window(4, day, month, year, origin_airport, airline)
 
-        count = 0
-        x = []
-        y = []
+        value = [0] * 24
+        counts = [0] * 24
+
         for res in results:
-            x.append(res[5])
-            y.append(res[6])
-            if res[11] == 1:
-                count += 1
-        print(count)
-        print(len(results))
-        if len(results) > 0:
-            indicator = int(count / float(len(results)) * 100)
-        else:
-            indicator = -1
+            if res[9] != 'NA' and type(res[10]) is int:
+                delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
+                hour = res[7]
+                value[hour] += delay
+                counts[hour] += 1
+
+        for i in range(24):
+            if counts[i] > 0:
+                value[i] /= counts[i]
+
+        indicator = value[sched_hour]
 
     return render_template('search_flight.html', results=results, p_val=indicator, data=data)
 
@@ -321,7 +322,8 @@ def get_fig_2(origin, date):
     fig, ax = plt.subplots()
 
     for res in results:
-        if res[9] != 'NA' and type(res[10]) is int:
+        if res[9] != 'NA' and type(res[10]) is int and type(res[4]) is int and type(res[5]) is int and type(res[6]) \
+                is int and type(res[7]) is int and type(res[8]) is int:
             delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
             hour = res[7]
             value[hour] += delay
@@ -338,7 +340,7 @@ def get_fig_2(origin, date):
     ax.bar(airline.keys(), airline.values())
     ax.set_ylabel('Minutes')
     ax.set_xlabel('Airline')
-    title = "Average Delay By Airline At " + origin + ' On ' + str(day) + '/' + str(month)
+    title = "Average Delay By Airline At " + origin + ' On ' + str(month) + '/' + str(day)
     ax.set_title(title)
     img1 = io.BytesIO()
     fig.savefig(img1, format='png')
