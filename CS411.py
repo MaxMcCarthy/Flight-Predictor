@@ -24,13 +24,13 @@ def create_connection(db_file):
         return None
 
 
-conn = create_connection('/Users/Max/PycharmProjects/CS411/flights.db')
+conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/flights.db')
 
 
 def generate_params():
-    airline = request.form['airline']
-    origin_airport = request.form['origin_airport']
-    dest_airport = request.form['dest_airport']
+    airline = request.form['airline'].upper()
+    origin_airport = request.form['origin_airport'].upper()
+    dest_airport = request.form['dest_airport'].upper()
     dept_date = request.form['dept_date']
     act_dept = request.form['act_dept']
     delayed = 'delayed' in request.form
@@ -231,8 +231,8 @@ def search_flight():
     data = {}
     if request.method == 'POST':
         cur = conn.cursor()
-        airline = request.form['airline']
-        origin_airport = request.form['origin_airport']
+        airline = request.form['airline'].upper()
+        origin_airport = request.form['origin_airport'].upper()
         dept_date = request.form['dept_date']
 
         data = {'airline': airline, 'origin': origin_airport, 'date': dept_date}
@@ -390,5 +390,5 @@ def get_fig_3(origin, airline, date):
 
 
 if __name__ == '__main__':
-    conn = create_connection('/Users/Max/PycharmProjects/CS411/flights.db')
+    conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/flights.db')
     app.run()
