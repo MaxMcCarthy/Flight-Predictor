@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="5a51599e-16c1-4b68-8271-b4b9c84e9103" name="Default" comment="" />
-=======
     <list default="true" id="5a51599e-16c1-4b68-8271-b4b9c84e9103" name="Default" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/css/addFlight.css" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/css/createUser.css" />
@@ -15,7 +12,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/login.html" afterPath="$PROJECT_DIR$/templates/login.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/search_flight.html" afterPath="$PROJECT_DIR$/templates/search_flight.html" />
     </list>
->>>>>>> mari
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,31 +24,15 @@
       <file leaf-file-name="CS411.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CS411.py">
           <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-            <state relative-caret-position="453">
-              <caret line="172" column="29" lean-forward="false" selection-start-line="172" selection-start-column="29" selection-end-line="172" selection-end-column="29" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-                <marker date="1512347792000" expanded="true" signature="10822:10849" ph="..." />
-=======
             <state relative-caret-position="528">
               <caret line="177" column="29" lean-forward="true" selection-start-line="177" selection-start-column="29" selection-end-line="177" selection-end-column="29" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
->>>>>>> mari
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-<<<<<<< HEAD
-      <file leaf-file-name="login.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/templates/login.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-              <folding />
-=======
       <file leaf-file-name="addFlight.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/css/addFlight.css">
           <provider selected="true" editor-type-id="text-editor">
@@ -81,7 +61,6 @@
               <folding>
                 <element signature="e#1099#1105#0" expanded="true" />
               </folding>
->>>>>>> mari
             </state>
           </provider>
         </entry>
@@ -90,15 +69,9 @@
         <entry file="file://$PROJECT_DIR$/templates/create_user.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
-<<<<<<< HEAD
-              <caret line="5" column="7" lean-forward="false" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-              <folding>
-                <marker date="1512347793000" expanded="true" signature="387:395" ph="..." />
-=======
               <caret line="5" column="69" lean-forward="true" selection-start-line="5" selection-start-column="69" selection-end-line="5" selection-end-column="69" />
               <folding>
                 <element signature="e#1093#1099#0" expanded="true" />
->>>>>>> mari
               </folding>
             </state>
           </provider>
@@ -107,17 +80,10 @@
       <file leaf-file-name="search_flight.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/search_flight.html">
           <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-            <state relative-caret-position="435">
-              <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-              <folding>
-                <marker date="1512347793000" expanded="true" signature="1691:1698" ph="..." />
-=======
             <state relative-caret-position="585">
               <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
               <folding>
                 <element signature="e#2683#2689#0" expanded="true" />
->>>>>>> mari
               </folding>
             </state>
           </provider>
@@ -126,17 +92,10 @@
       <file leaf-file-name="add_flight.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/add_flight.html">
           <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-            <state relative-caret-position="90">
-              <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-              <folding>
-                <marker date="1512347793000" expanded="true" signature="2263:2270" ph="..." />
-=======
             <state relative-caret-position="150">
               <caret line="10" column="6" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
               <folding>
                 <element signature="e#3100#3106#0" expanded="true" />
->>>>>>> mari
               </folding>
             </state>
           </provider>
@@ -145,24 +104,15 @@
       <file leaf-file-name="edit_flight.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/edit_flight.html">
           <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-            <state relative-caret-position="450">
-              <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-              <folding>
-                <marker date="1512347793000" expanded="true" signature="1337:1346" ph="..." />
-=======
             <state relative-caret-position="557">
               <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding>
                 <element signature="e#2064#2070#0" expanded="true" />
->>>>>>> mari
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-<<<<<<< HEAD
-=======
       <file leaf-file-name="createUser.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/css/createUser.css">
           <provider selected="true" editor-type-id="text-editor">
@@ -173,7 +123,6 @@
           </provider>
         </entry>
       </file>
->>>>>>> mari
     </leaf>
   </component>
   <component name="FindInProjectRecents">
@@ -195,18 +144,11 @@
         <option value="$PROJECT_DIR$/static/css/createUser.css" />
         <option value="$PROJECT_DIR$/static/css/addFlight.css" />
         <option value="$PROJECT_DIR$/static/css/login.css" />
-<<<<<<< HEAD
-=======
         <option value="$PROJECT_DIR$/templates/login.html" />
->>>>>>> mari
         <option value="$PROJECT_DIR$/templates/create_user.html" />
         <option value="$PROJECT_DIR$/templates/search_flight.html" />
         <option value="$PROJECT_DIR$/templates/add_flight.html" />
         <option value="$PROJECT_DIR$/templates/edit_flight.html" />
-<<<<<<< HEAD
-        <option value="$PROJECT_DIR$/templates/login.html" />
-=======
->>>>>>> mari
       </list>
     </option>
   </component>
@@ -374,10 +316,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
-<<<<<<< HEAD
             <marker date="1512347792000" expanded="true" signature="10822:10849" ph="..." />
-=======
->>>>>>> mari
           </folding>
         </state>
       </provider>
@@ -400,18 +339,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CS411.py">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="453">
-          <caret line="172" column="29" lean-forward="false" selection-start-line="172" selection-start-column="29" selection-end-line="172" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <marker date="1512347792000" expanded="true" signature="10822:10849" ph="..." />
-=======
         <state relative-caret-position="528">
           <caret line="177" column="29" lean-forward="true" selection-start-line="177" selection-start-column="29" selection-end-line="177" selection-end-column="29" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
->>>>>>> mari
           </folding>
         </state>
       </provider>
@@ -442,51 +373,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/add_flight.html">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="90">
-          <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-          <folding>
-            <marker date="1512347793000" expanded="true" signature="2263:2270" ph="..." />
-=======
         <state relative-caret-position="150">
           <caret line="10" column="6" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
           <folding>
             <element signature="e#3100#3106#0" expanded="true" />
->>>>>>> mari
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/edit_flight.html">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="450">
-          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding>
-            <marker date="1512347793000" expanded="true" signature="1337:1346" ph="..." />
-=======
         <state relative-caret-position="557">
           <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding>
             <element signature="e#2064#2070#0" expanded="true" />
->>>>>>> mari
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/search_flight.html">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="435">
-          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-          <folding>
-            <marker date="1512347793000" expanded="true" signature="1691:1698" ph="..." />
-=======
         <state relative-caret-position="585">
           <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
           <folding>
             <element signature="e#2683#2689#0" expanded="true" />
->>>>>>> mari
           </folding>
         </state>
       </provider>
@@ -494,32 +404,20 @@
     <entry file="file://$PROJECT_DIR$/templates/create_user.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
-<<<<<<< HEAD
-          <caret line="5" column="7" lean-forward="false" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-          <folding>
-            <marker date="1512347793000" expanded="true" signature="387:395" ph="..." />
-=======
           <caret line="5" column="69" lean-forward="true" selection-start-line="5" selection-start-column="69" selection-end-line="5" selection-end-column="69" />
           <folding>
             <element signature="e#1093#1099#0" expanded="true" />
->>>>>>> mari
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/login.html">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="240">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-=======
         <state relative-caret-position="330">
           <caret line="22" column="66" lean-forward="false" selection-start-line="22" selection-start-column="66" selection-end-line="22" selection-end-column="66" />
           <folding>
             <element signature="e#1099#1105#0" expanded="true" />
           </folding>
->>>>>>> mari
         </state>
       </provider>
     </entry>
