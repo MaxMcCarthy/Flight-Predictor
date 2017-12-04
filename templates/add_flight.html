@@ -44,6 +44,7 @@
             </form>
         </div>
 
+        {% if rows %}
         <div>
             <h3 id="flights">Your Flights</h3>
             <table border="1">
@@ -64,7 +65,7 @@
                         <td>{{ row[3] }}</td>
                         <td>{{ row[5] }}/{{ row[6] }}/{{ row[4] }} at {{ row[7] }}:{% if row[8] < 10 %}0{% endif %}{{ row[8] }}</td>
                         <td>{{ row[5] }}/{{ row[6] }}/{{ row[4] }} at {{ row[9] }}:{% if row[10] < 10 %}0{% endif %}{{ row[10] }}</td>
-                        <td>{% if row[11] == 0 or row[11] == "None" %}No{% else %}Yes{% endif %}</td>
+                        <td>{% if row[11] == 0 or row[11] == "None"%}No{% else %}Yes{% endif %}</td>
                         <td id="btnDelete"><button onclick="location.href='{{ url_for('delete_flight', userId=userId, flightId=row[0]) }}'" type="button">Delete</button></td>
                         <td id="btnEdit"><button onclick="location.href='{{ url_for('edit_flight', userId=userId, flightId=row[0]) }}'" type="button">Edit</button></td>
                     </tr>
@@ -72,6 +73,7 @@
 
             </table>
         </div>
+        {% endif %}
 
     <footer class="footer">
         <p>&copy; Flight Predictor 2017</p>

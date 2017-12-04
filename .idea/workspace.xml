@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5a51599e-16c1-4b68-8271-b4b9c84e9103" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CS411.py" afterPath="$PROJECT_DIR$/CS411.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/login.html" afterPath="$PROJECT_DIR$/templates/login.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/flights.db" afterPath="$PROJECT_DIR$/flights.db" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/add_flight.html" afterPath="$PROJECT_DIR$/templates/add_flight.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="CS411.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CS411.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CS411.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="82">
-              <caret line="148" column="0" lean-forward="false" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+            <state relative-caret-position="-331">
+              <caret line="157" column="40" lean-forward="false" selection-start-line="157" selection-start-column="37" selection-end-line="157" selection-end-column="40" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -73,7 +74,7 @@
       <file leaf-file-name="search_flight.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/search_flight.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
+            <state relative-caret-position="387">
               <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
               <folding>
                 <element signature="e#2683#2689#0" expanded="true" />
@@ -82,13 +83,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="add_flight.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="add_flight.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/add_flight.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="6" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
+            <state relative-caret-position="99">
+              <caret line="61" column="24" lean-forward="true" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
               <folding>
-                <element signature="e#3100#3106#0" expanded="true" />
+                <element signature="e#3141#3147#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -97,7 +98,7 @@
       <file leaf-file-name="edit_flight.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/edit_flight.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="705">
+            <state relative-caret-position="387">
               <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding />
             </state>
@@ -123,6 +124,7 @@
       <find>send_file</find>
       <find>commit</find>
       <find>login</find>
+      <find>add</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -137,10 +139,10 @@
         <option value="$PROJECT_DIR$/static/css/login.css" />
         <option value="$PROJECT_DIR$/templates/create_user.html" />
         <option value="$PROJECT_DIR$/templates/search_flight.html" />
-        <option value="$PROJECT_DIR$/templates/add_flight.html" />
         <option value="$PROJECT_DIR$/templates/edit_flight.html" />
         <option value="$PROJECT_DIR$/templates/login.html" />
         <option value="$PROJECT_DIR$/CS411.py" />
+        <option value="$PROJECT_DIR$/templates/add_flight.html" />
       </list>
     </option>
   </component>
@@ -352,7 +354,7 @@
         <state relative-caret-position="150">
           <caret line="10" column="6" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
           <folding>
-            <element signature="e#3100#3106#0" expanded="true" />
+            <element signature="e#3141#3147#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -431,34 +433,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/add_flight.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="6" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
-          <folding>
-            <element signature="e#3100#3106#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/edit_flight.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/search_flight.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding>
-            <element signature="e#2683#2689#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/create_user.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -479,12 +453,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/templates/search_flight.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding>
+            <element signature="e#2683#2689#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CS411.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="82">
-          <caret line="148" column="0" lean-forward="false" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+        <state relative-caret-position="-331">
+          <caret line="157" column="40" lean-forward="false" selection-start-line="157" selection-start-column="37" selection-end-line="157" selection-end-column="40" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/edit_flight.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/add_flight.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="99">
+          <caret line="61" column="24" lean-forward="true" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
+          <folding>
+            <element signature="e#3141#3147#0" expanded="true" />
           </folding>
         </state>
       </provider>
