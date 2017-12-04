@@ -2,64 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Flight Predictor</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/addFlight.css" rel="stylesheet">
+
 </head>
 <body>
 
-    <div>
-        <button onclick="location.href='{{ url_for('search_flight') }}'" type="button">Search Flight</button>
-    </div>
-    <form action = "{{ url_for('add_flight', userId=userId) }}" method = "POST">
-        <h3>Add Flight</h3>
-        <br>Airline
-        <input type = "text" name = "airline" placeholder="Airline"><br>
+    <div class="container">
+        <div class="header">
+            <h3 id="flight" class="text-muted">Flight Predictor</h3>
+        </div>
+        <div class="sm">
+            <p align="right"><a href="/">Sign Out</a></p>
+        </div>
+        <div class="jumbotron">
+            <button id="search" onclick="location.href='{{ url_for('search_flight') }}'" type="button">Search Flight</button>
+            <h1>Add Flight</h1>
 
-        <br>Origin Airport Code
-        <input type = "text" name = "origin_airport"><br>
+            <form class="form-signin" action="{{ url_for('add_flight', userId=userId) }}" method="POST">
+                <br>Airline
+                <input type="text" name="airline" autofocus="true"><br>
 
-        <br>Destination Airport Code
-        <input type = "text" name = "dest_airport"><br>
+                <br>Origin Airport Code
+                <input type="text" name="origin_airport"><br>
 
-        <br>Date of Departure Time
-        <input type = "datetime-local" name = "dept_date"><br>
+                <br>Destination Airport Code
+                <input type="text" name="dest_airport"><br>
 
-        <br>Actual Departure Time
-        <input type = "time" name = "act_dept"><br>
+                <br>Date of Departure Time
+                <input type="datetime-local" name="dept_date"><br>
 
-        <br>Delayed
-        <input type = "checkbox" name = "delayed"><br>
+                <br>Actual Departure Time
+                <input type="time" name="act_dept"><br>
 
-        <input type = "submit" value = "Add" /><br>
-    </form>
+                <br>Delayed
+                <input type="checkbox" name="delayed"><br>
 
-    <div>
-        <h3>Your Flights</h3>
-        <table style="width:100%">
-            <tr>
-                <th>Airline</th>
-                <th>Origin</th>
-                <th>Destination</th>
-                <th>Departure</th>
-                <th>Actual Departure</th>
-                <th>Delayed</th>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
-            </tr>
-            {% for row in rows %}
+                <input type="submit" value="Add" /><br>
+            </form>
+        </div>
+
+        {% if rows %}
+        <div>
+            <h3 id="flights">Your Flights</h3>
+            <table border="1">
                 <tr>
-                    <td>{{ row[1] }}</td>
-                    <td>{{ row[2] }}</td>
-                    <td>{{ row[3] }}</td>
-                    <td>{{ row[5] }}/{{ row[6] }}/{{ row[4] }} at {{ row[7] }}:{% if row[8] < 10 %}0{% endif %}{{ row[8] }}</td>
-                    <td>{{ row[5] }}/{{ row[6] }}/{{ row[4] }} at {{ row[9] }}:{% if row[10] < 10 %}0{% endif %}{{ row[10] }}</td>
-                    <td>{% if row[11] == 0 or row[11] == "None" %}No{% else %}Yes{% endif %}</td>
-                    <td><button onclick="location.href='{{ url_for('delete_flight', userId=userId, flightId=row[0]) }}'" type="button">Delete</button></td>
-                    <td><button onclick="location.href='{{ url_for('edit_flight', userId=userId, flightId=row[0]) }}'" type="button">Edit</button></td>
+                    <th>Airline</th>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Departure</th>
+                    <th>Actual Departure</th>
+                    <th>Delayed</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
                 </tr>
-            {% endfor %}
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <td>{{ row[5] }}/{{ row[6] }}/{{ row[4] }} at {{ row[7] }}:{% if row[8] < 10 %}0{% endif %}{{ row[8] }}</td>
+                        <td>{{ row[5] }}/{{ row[6] }}/{{ row[4] }} at {{ row[9] }}:{% if row[10] < 10 %}0{% endif %}{{ row[10] }}</td>
+                        <td>{% if row[11] == 0 or row[11] == "None"%}No{% else %}Yes{% endif %}</td>
+                        <td id="btnDelete"><button onclick="location.href='{{ url_for('delete_flight', userId=userId, flightId=row[0]) }}'" type="button">Delete</button></td>
+                        <td id="btnEdit"><button onclick="location.href='{{ url_for('edit_flight', userId=userId, flightId=row[0]) }}'" type="button">Edit</button></td>
+                    </tr>
+                {% endfor %}
 
-        </table>
+            </table>
+        </div>
+        {% endif %}
+
+    <footer class="footer">
+        <p>&copy; Flight Predictor 2017</p>
+    </footer>
     </div>
-
 </body>
 </html>

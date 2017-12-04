@@ -1,9 +1,8 @@
 import base64
-from StringIO import StringIO
 from io import BytesIO
 
 import io
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash
 import sqlite3
 from sqlite3 import Error
 from matplotlib import pyplot as plt
@@ -25,13 +24,13 @@ def create_connection(db_file):
         return None
 
 
-conn = create_connection('/Users/Max/PycharmProjects/CS411/flights.db')
+conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/flights.db')
 
 
 def generate_params():
-    airline = request.form['airline']
-    origin_airport = request.form['origin_airport']
-    dest_airport = request.form['dest_airport']
+    airline = request.form['airline'].upper()
+    origin_airport = request.form['origin_airport'].upper()
+    dest_airport = request.form['dest_airport'].upper()
     dept_date = request.form['dept_date']
     act_dept = request.form['act_dept']
     delayed = 'delayed' in request.form
@@ -157,7 +156,8 @@ def login():
         row = cur.fetchone()
         if row:
             return redirect(url_for('add_flight', userId=row[0]))
-        return 'NOT FOUND'
+        error = 'Invalid username or password. Please try again!'
+        return render_template('login.html', error=error)
 
 
 @app.route('/newUser', methods=['POST', 'GET'])
@@ -169,8 +169,13 @@ def create_user():
 
         cur.execute('''INSERT INTO user (username, password)
                  VALUES (?, ?)''', (user_name, pw))
+        # conn.commit()
+        # cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
+        cur.execute('''CREATE TRIGGER after_insert AFTER INSERT ON user
+                       BEGIN
+                       SELECT user_id FROM user WHERE username=user_name AND password=pw;
+                       END;''')
         conn.commit()
-        cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
         rows = cur.fetchone()
         print(rows)
         return redirect(url_for('add_flight', userId=rows[0]))
@@ -232,8 +237,8 @@ def search_flight():
     data = {}
     if request.method == 'POST':
         cur = conn.cursor()
-        airline = request.form['airline']
-        origin_airport = request.form['origin_airport']
+        airline = request.form['airline'].upper()
+        origin_airport = request.form['origin_airport'].upper()
         dept_date = request.form['dept_date']
 
         data = {'airline': airline, 'origin': origin_airport, 'date': dept_date}
@@ -391,5 +396,6 @@ def get_fig_3(origin, airline, date):
 
 
 if __name__ == '__main__':
-    conn = create_connection('/Users/Max/PycharmProjects/CS411/flights.db')
+    app.secret_key = 'secret key'
+    conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/flights.db')
     app.run()
