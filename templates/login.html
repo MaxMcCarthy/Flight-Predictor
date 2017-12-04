@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Flight Predictor</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/login.css" rel="stylesheet">
 </head>
-<body>
-    <h3>Log In</h3>
-    <form action = "{{ url_for('login') }}" method = "POST">
-        User Name
-        <input type="text" name="username"><br>
-        Password
-        <input type="password" name="password"><br>
-        <input type="submit" value="Login">
-        <button onclick="location.href='{{ url_for('create_user') }}'" type="button">Create New User</button>
-    </form>
 
+<body>
+    <div class="container">
+        <div class="header">
+            <h3 id="flight" class="text-muted">Flight Predictor</h3>
+        </div>
+
+
+        <div class="jumbotron">
+            <h1>Log In</h1>
+            <form class="form-signin" action="{{ url_for('login') }}" method = "POST">
+                User Name
+                <input type="text" name="username" autofocus="true"><br>
+                Password
+                <input type="password" name="password"><br>
+                <input type="submit" value="Login">
+                <button onclick="location.href='{{ url_for('create_user') }}'" type="button">Create New User</button>
+            </form>
+        </div>
+
+
+        <footer class="footer">
+            <p>&copy; Flight Predictor 2017</p>
+        </footer>
+    </div>
 </body>
 </html>

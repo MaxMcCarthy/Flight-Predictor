@@ -1,33 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Flight Predictor</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/addFlight.css" rel="stylesheet">
 </head>
 <body>
-    <form action = "{{ url_for('edit_flight', userId=userId, flightId=flightId) }}" method = "POST">
-        <h3>Edit Flight</h3>
-        <br>Airline
-        <input type = "text" name = "airline" value="{{ flight[1] }}"><br>
+    <div class="container">
+        <div class="header">
+            <h3 id="flight" class="text-muted">Flight Predictor</h3>
+        </div>
+        <div class="sm">
+            <p align="right"><a href="/">Sign Out</a></p>
+        </div>
+        <div class="jumbotron">
+            <h1>Edit Flight</h1>
 
-        <br>Origin Airport Code
-        <input type = "text" name = "origin_airport" value="{{ flight[2] }}"><br>
+            <form class="form-signin" action="{{ url_for('edit_flight', userId=userId, flightId=flightId) }}" method="POST">
+                <br>Airline
+                <input type = "text" name = "airline" value="{{ flight[1] }}"><br>
 
-        <br>Destination Airport Code
-        <input type = "text" name = "dest_airport" value="{{ flight[3] }}"><br>
+                <br>Origin Airport Code
+                <input type = "text" name = "origin_airport" value="{{ flight[2] }}"><br>
 
-        <br>Date of Departure Time
-        <input type = "datetime-local" name = "dept_date" value="{{ flight[4] }}-{% if flight[5] < 10 %}0{% endif %}{{ flight[5] }}-{% if flight[6] < 10 %}0{% endif %}{{ flight[6] }}T{{ flight[7] }}:{% if flight[8] < 10 %}0{% endif %}{{ flight[8] }}"><br>
+                <br>Destination Airport Code
+                <input type = "text" name = "dest_airport" value="{{ flight[3] }}"><br>
 
-        <br>Actual Departure Time
-        <input type = "time" name = "act_dept" value="{{ flight[9] }}:{% if flight[10] < 10 %}0{% endif %}{{ flight[10] }}"><br>
+                <br>Date of Departure Time
+                <input type = "datetime-local" name = "dept_date" value="{{ flight[4] }}-{% if flight[5] < 10 %}0{% endif %}{{ flight[5] }}-{% if flight[6] < 10 %}0{% endif %}{{ flight[6] }}T{{ flight[7] }}:{% if flight[8] < 10 %}0{% endif %}{{ flight[8] }}"><br>
 
-        <br>Delayed
-        <input type = "checkbox" name = "delayed" {{ "checked" if flight[11]==1 or flight[11]=="on"}}><br>
+                <br>Actual Departure Time
+                <input type = "time" name = "act_dept" value="{{ flight[9] }}:{% if flight[10] < 10 %}0{% endif %}{{ flight[10] }}"><br>
 
-        <input type = "submit" value = "Save" />
-        <td><button onclick="location.href='{{ url_for('add_flight', userId=userId) }}'" type="button">Cancel</button></td><br>
-    </form>
+                <br>Delayed
+                <input type = "checkbox" name = "delayed" {{ "checked" if flight[11]==1 or flight[11]=="on"}}><br>
+
+                <input type = "submit" value = "Save" />
+                <td><button onclick="location.href='{{ url_for('add_flight', userId=userId) }}'" type="button">Cancel</button></td><br>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; Flight Predictor 2017</p>
+    </footer>
 
 </body>
 </html>
