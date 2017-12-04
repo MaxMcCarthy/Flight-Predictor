@@ -9,6 +9,7 @@ from sqlite3 import Error
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_template import FigureCanvas
 from Tools.tools import calc_delay, get_days_in_month
+import numpy as np
 
 app = Flask(__name__)
 
@@ -245,20 +246,21 @@ def search_flight():
 
         results = get_flights_in_window(4, day, month, year, origin_airport, airline)
 
-        count = 0
-        x = []
-        y = []
+        value = [0] * 24
+        counts = [0] * 24
+
         for res in results:
-            x.append(res[5])
-            y.append(res[6])
-            if res[11] == 1:
-                count += 1
-        print(count)
-        print(len(results))
-        if len(results) > 0:
-            indicator = int(count / float(len(results)) * 100)
-        else:
-            indicator = -1
+            if res[9] != 'NA' and type(res[10]) is int:
+                delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
+                hour = res[7]
+                value[hour] += delay
+                counts[hour] += 1
+
+        for i in range(24):
+            if counts[i] > 0:
+                value[i] /= counts[i]
+
+        indicator = value[sched_hour]
 
     return render_template('search_flight.html', results=results, p_val=indicator, data=data)
 
@@ -289,13 +291,14 @@ def get_fig(origin, airline, date):
         if counts[i] > 0:
             value[i] /= counts[i]
 
-    plt.plot(list(range(24)), value)
-    plt.ylabel('Minutes')
-    plt.xlabel('Hour')
+    fig, ax = plt.subplots()
+    ax.plot(list(range(24)), value)
+    ax.set_ylabel('Minutes')
+    ax.set_xlabel('Hour')
     title = "Average Delay By Hour At " + origin + " Flying " + airline
-    plt.title(title)
+    ax.set_title(title)
     img = io.BytesIO()
-    plt.savefig(img, format='png')
+    fig.savefig(img, format='png')
     img.seek(0)
 
     return send_file(img, mimetype="image/png")
@@ -316,38 +319,75 @@ def get_fig_2(origin, date):
     counts = [0] * 24
     airline = {}
 
+    fig, ax = plt.subplots()
+
     for res in results:
-        if res[9] != 'NA' and type(res[10]) is int:
+        if res[9] != 'NA' and type(res[10]) is int and type(res[4]) is int and type(res[5]) is int and type(res[6]) \
+                is int and type(res[7]) is int and type(res[8]) is int:
             delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
             hour = res[7]
             value[hour] += delay
             counts[hour] += 1
             if res[1] not in airline:
-                airline[res[1]] = ([0]*24, [0]*24)
-            airline[res[1]][0][hour] += delay
-            airline[res[1]][1][hour] += 1
-
-    for i in range(24):
-        if counts[i] > 0:
-            value[i] /= counts[i]
+                airline[res[1]] = [0, 0]
+            airline[res[1]][0] += delay
+            airline[res[1]][1] += 1
 
     for carrier in airline:
-        airline[carrier][1]
+        airline[carrier] = airline[carrier][0]/airline[carrier][1]
     print(airline)
-    fig, ax = plt.subplots()
-    ax.bar(range(len(airline)), airline.values())
-    names = list(airline.keys())
-    ax.set_xticks(range(len(airline)))
-    ax.set_xticklabels(names)
+
+    ax.bar(airline.keys(), airline.values())
     ax.set_ylabel('Minutes')
-    ax.set_xlabel('Hour')
-    title = "Average Delay By Airline At " + origin
+    ax.set_xlabel('Airline')
+    title = "Average Delay By Airline At " + origin + ' On ' + str(month) + '/' + str(day)
     ax.set_title(title)
     img1 = io.BytesIO()
     fig.savefig(img1, format='png')
     img1.seek(0)
 
     return send_file(img1, mimetype="image/png")
+
+
+@app.route('/getFig3/<origin>/<airline>/<date>')
+def get_fig_3(origin, airline, date):
+    cur = conn.cursor()
+
+    year = int(date[0:4])
+    month = int(date[5:7])
+    day = int(date[8:10])
+    sched_hour = int(date[11:13])
+    sched_minute = int(date[14:])
+
+    window = 4
+    results = get_flights_in_window(window, day, month, year, origin, airline)
+    n = (2 * window) - 1
+    airline_dict = {}
+
+    fig, ax = plt.subplots()
+
+    for res in results:
+        if res[9] != 'NA' and type(res[10]) is int:
+            delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
+            day = str(res[6])
+            if day not in airline_dict:
+                airline_dict[day] = [0, 0]
+            airline_dict[day][0] += delay
+            airline_dict[day][1] += 1
+
+    for carrier in airline_dict:
+        airline_dict[carrier] = airline_dict[carrier][0]/airline_dict[carrier][1]
+
+    ax.bar(airline_dict.keys(), airline_dict.values())
+    ax.set_ylabel('Minutes')
+    ax.set_xlabel('Day')
+    title = "Average Delay By Day At " + origin + ' flying ' + airline
+    ax.set_title(title)
+    img2 = io.BytesIO()
+    fig.savefig(img2, format='png')
+    img2.seek(0)
+
+    return send_file(img2, mimetype="image/png")
 
 
 if __name__ == '__main__':
