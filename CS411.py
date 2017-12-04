@@ -2,7 +2,7 @@ import base64
 from io import BytesIO
 
 import io
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash
 import sqlite3
 from sqlite3 import Error
 from matplotlib import pyplot as plt
@@ -156,7 +156,8 @@ def login():
         row = cur.fetchone()
         if row:
             return redirect(url_for('add_flight', userId=row[0]))
-        return 'NOT FOUND'
+        error = 'Invalid username or password. Please try again!'
+        return render_template('login.html', error=error)
 
 
 @app.route('/newUser', methods=['POST', 'GET'])
@@ -395,5 +396,6 @@ def get_fig_3(origin, airline, date):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'secret key'
     conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/flights.db')
     app.run()
