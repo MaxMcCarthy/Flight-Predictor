@@ -1,0 +1,92 @@
+body {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.jumbotron {
+    width: 100%;
+    margin: 10px;
+    float: left;
+}
+a {
+    color: grey;
+}
+table {
+    width: 100%;
+    margin: 10px;
+}
+button {
+    margin-top: 10px;
+}
+#flights {
+    margin: 10px;
+}
+th {
+    padding-left: 10px;
+}
+td {
+    padding-left: 10px;
+}
+#btnDelete {
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+#btnEdit {
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+#flight {
+    float: left;
+    width: 200px;
+}
+
+.form-signin {
+    max-width: 800px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+.form-signin .checkbox {
+    font-weight: normal;
+}
+.form-signin .form-control {
+    width: 780px;
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+.form-signin input[type="text"] {
+    margin-top:-5px;
+    margin-bottom:-5px;
+}
+.form-signin input[type="datetime-local"] {
+    margin-top:-5px;
+    margin-bottom:-5px;
+ }
+.form-signin input[type="time"] {
+    margin-top:-5px;
+    margin-bottom:-5px;
+}
+.form-signin input[type="checkbox"] {
+    margin-top:-5px;
+    margin-bottom:20px;
+}
+#search {
+   float: right;
+}
+br {
+    padding-left: 10px;
+}

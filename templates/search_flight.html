@@ -2,55 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Flight Predictor</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/addFlight.css" rel="stylesheet">
 </head>
 <body>
-    <form action = "{{ url_for('search_flight') }}" method = "POST">
-        <h3>Search A Flight</h3>
-        <br>Airline
-        <input type = "text" name = "airline" placeholder="Airline"><br>
+    <div class="container">
+        <div class="header">
+            <h3 id="flight" class="text-muted">Flight Predictor</h3>
+        </div>
+        <div class="sm">
+            <p align="right"><a href="/">Sign Out</a></p>
+        </div>
+        <div class="jumbotron">
+            <h1>Search a Flight</h1>
 
-        <br>Origin Airport
-        <input type = "text" name = "origin_airport"><br>
+            <form class="form-signin" action="{{ url_for('search_flight') }}" method="POST">
+                <br>Airline
+                <input type = "text" name = "airline" autofocus="true"><br>
 
-        <br>Date of Departure
-        <input type = "datetime-local" name = "dept_date"><br>
+                <br>Origin Airport
+                <input type = "text" name = "origin_airport"><br>
 
-        <input type = "submit" value = "Search" /><br>
-    </form>
+                <br>Date of Departure
+                <input type = "datetime-local" name = "dept_date"><br>
 
-    {% if results != None %}
-    <h3>Based on similar flights and your flight information, your flight will be delayed by {{ p_val }} minutes.</h3>
-    <h3>{{ data['date'] }}</h3>
+                <input type = "submit" value = "Search" /><br>
+            </form>
+        </div>
 
-    <div>
-        <h3>Similar Flights</h3>
-        <table style="width:100%">
-            <tr>
-                <th>Airline</th>
-                <th>Origin</th>
-                <th>Departure</th>
-                <th>Delayed</th>
-            </tr>
-            {% for result in results %}
+
+
+        {% if results != None %}
+        <h5>Based on similar flights and your flight information, your flight will be delayed by {{ p_val }} minutes.</h5>
+        <h5>{{ data['date'] }}</h5>
+
+        <div>
+            <h3 id="flights">Similar Flights</h3>
+            <table border="1">
                 <tr>
-                    <td>{{ result[1] }}</td>
-                    <td>{{ result[2] }}</td>
-                    <td>{{ result[5] }}/{{ result[6] }}/{{ result[4] }} at {{ result[7] }}:{% if result[8] < 10 %}0{% endif %}{{ result[8] }}</td>
-                    <td>{% if result[7] == 0 or result[7] == "None" %}No{% else %}Yes{% endif %}</td>
+                    <th>Airline</th>
+                    <th>Origin</th>
+                    <th>Departure</th>
+                    <th>Delayed</th>
                 </tr>
-            {% endfor %}
-        </table>
+                {% for result in results %}
+                    <tr>
+                        <td>{{ result[1] }}</td>
+                        <td>{{ result[2] }}</td>
+                        <td>{{ result[5] }}/{{ result[6] }}/{{ result[4] }} at {{ result[7] }}:{% if result[8] < 10 %}0{% endif %}{{ result[8] }}</td>
+                        <td>{% if result[7] == 0 or result[7] == "None" %}No{% else %}Yes{% endif %}</td>                    </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+
+        <div>
+                <img src="{{ url_for('get_fig', origin=data['origin'], airline=data['airline'], date=data['date']) }}">
+        </div>
+        <div>
+                <img src="{{ url_for('get_fig_2', origin=data['origin'], date=data['date']) }}">
+        </div>
+        <div>
+                <img src="{{ url_for('get_fig_3', origin=data['origin'], airline=data['airline'], date=data['date']) }}">
+        </div>
+        {% endif %}
+
+        <footer class="footer">
+            <p>&copy; Flight Predictor 2017</p>
+        </footer>
     </div>
-    <div>
-            <img src="{{ url_for('get_fig', origin=data['origin'], airline=data['airline'], date=data['date']) }}">
-    </div>
-    <div>
-            <img src="{{ url_for('get_fig_2', origin=data['origin'], date=data['date']) }}">
-    </div>
-    <div>
-            <img src="{{ url_for('get_fig_3', origin=data['origin'], airline=data['airline'], date=data['date']) }}">
-    </div>
-    {% endif %}
 </body>
 </html>
