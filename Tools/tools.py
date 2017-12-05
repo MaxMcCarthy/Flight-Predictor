@@ -1,4 +1,4 @@
-
+import datetime
 
 """
 DEFINE LEAP YEAR
@@ -53,7 +53,7 @@ def get_days_in_month(month, year):
     return MONTHS[str(month)]
 
 
-def calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min):
+def calc_act(year, month, day, sched_hour, sched_min, delay):
     """
     from the database parameters, find the delay
     :param year:
@@ -61,8 +61,7 @@ def calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min):
     :param day:
     :param sched_hour:
     :param sched_min:
-    :param act_hour:
-    :param act_min:
+    :param delay:
     :return:
     """
 
@@ -70,37 +69,21 @@ def calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min):
 
     import datetime
     time1 = datetime.datetime(year, month, day, sched_hour, sched_min)
+    time1 += datetime.timedelta(minutes=delay)
+    return time1.month, time1.day, time1.hour, time1.minute
 
-    if sched_hour - act_hour > 2:
-        day += 1
 
-        if day > days_in_month:
-            day = 1
-            month += 1
+def calc_window(year, month, day, window_size):
+    """
 
-            if month > 12:
-                month = 1
-                year += 1
+    :param year:
+    :param month:
+    :param day:
+    :return:
+    """
 
-    elif abs(sched_hour - act_hour) > 2:
-        day -= 1
-
-        if day < days_in_month:
-            month -= 1
-            if month < 1:
-                month = 12
-                year -= 1
-            day = get_days_in_month(month, year)
-
-    time2 = datetime.datetime(year, month, day, act_hour, act_min)
-
-    if time1 < time2:
-        time_delta = time2-time1
-    else:
-        time_delta = time1 - time2
-        delay = time_delta.seconds/60
-        return delay * -1
-
-    delay = time_delta.seconds/60
-
-    return delay
+    time = datetime.datetime(year, month, day)
+    t_delta = datetime.timedelta(days=window_size)
+    back = time - t_delta
+    forward = time + t_delta
+    return back.month, back.day, forward.month, forward.day

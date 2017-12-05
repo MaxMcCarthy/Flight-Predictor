@@ -1,10 +1,10 @@
 import unittest
 from Tools import tools
-from Tools.tools import calc_delay, get_days_in_month
+from Tools.tools import calc_act, get_days_in_month, calc_window
 
 
-class TestFindDelays(unittest.TestCase):
-    """Test finding the dealy"""
+class TestFindActTime(unittest.TestCase):
+    """Test finding the actual time"""
 
     def test_leap_year(self):
         """
@@ -113,42 +113,56 @@ class TestFindDelays(unittest.TestCase):
             days = get_days_in_month('2',str(year))
             self.assertEquals(days, 29)
 
-    def test_cal_delay(self):
+    def test_find_act_time(self):
         """Is the delay correct, even if times roll over"""
         year = 2016 # leap year
         month = 4
         day = 22
         sched_hour = 22
         sched_min = 29
-        act_hour = 23
-        act_min = 9
 
         # test minute rollover
         # plus rollover
-        delay = calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min)
-        self.assertEquals(delay, 40)
+        delay = 32
+        month, day, hour, minute = calc_act(year, month, day, sched_hour, sched_min, delay)
+        self.assertEquals(month, 4)
+        self.assertEquals(day, 22)
+        self.assertEquals(hour, 23)
+        self.assertEquals(minute, 1)
         # negative rollover
-        act_hour = 21
-        delay = calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min)
-        self.assertEquals(delay, -80)
+        delay = -31
+        month, day, hour, minute = calc_act(year, month, day, sched_hour, sched_min, delay)
+        self.assertEquals(month, 4)
+        self.assertEquals(day, 22)
+        self.assertEquals(hour, 21)
+        self.assertEquals(minute, 58)
 
         # test hour rollover
         # plus rollover
-        act_hour = 01
-        delay = calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min)
-        self.assertEquals(delay, 160)
+        # act_hour = 01
+        # delay = calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min)
+        # self.assertEquals(delay, 160)
         # negative rollover
-        sched_hour = 1
-        act_hour = 23
-        delay = calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min)
-        self.assertEquals(delay, -140)
+        # sched_hour = 1
+        # act_hour = 23
+        # delay = calc_delay(year, month, day, sched_hour, sched_min, act_hour, act_min)
+        # self.assertEquals(delay, -140)
 
         # test day rollover
         # plus rollover
-        month = 2
-        day = 28
+        # month = 2
+        # day = 28
 
+    def test_window(self):
+        year = 2015
+        month = 1
+        day = 2
 
+        b_month, b_day, f_month, f_day = calc_window(year, month, day, 4)
+        self.assertEquals(b_month, 12)
+        self.assertEquals(b_day, 29)
+        self.assertEquals(f_month, 1)
+        self.assertEquals(f_day, 6)
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ import sqlite3
 from sqlite3 import Error
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_template import FigureCanvas
-from Tools.tools import calc_delay, get_days_in_month
+from Tools.tools import calc_window, calc_act, get_days_in_month
 import numpy as np
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ def create_connection(db_file):
         return None
 
 
-conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/flights.db')
+conn = create_connection('/Users/Max/PycharmProjects/CS411/flights.db')
 
 
 def generate_params():
@@ -32,7 +32,9 @@ def generate_params():
     origin_airport = request.form['origin_airport'].upper()
     dest_airport = request.form['dest_airport'].upper()
     dept_date = request.form['dept_date']
-    act_dept = request.form['act_dept']
+    print('here')
+    delay = int(request.form['delay'])
+    print('there')
     delayed = 'delayed' in request.form
 
     print(dept_date)
@@ -43,105 +45,9 @@ def generate_params():
     sched_hour = int(dept_date[11:13])
     sched_minute = int(dept_date[14:])
 
-    act_hour = int(act_dept[:2])
-    act_min = int(act_dept[3:])
-
-    params = (airline, origin_airport, dest_airport, year, month, day, sched_hour, sched_minute, act_hour, act_min, delayed)
+    params = (airline, origin_airport, dest_airport, year, month, day, sched_hour, sched_minute, delay, delayed)
 
     return params
-
-
-def get_flights_in_window(window, day, month, year, origin, airline=None):
-    """
-
-    :param window:
-    :param day:
-    :param month:
-    :param year:
-    :param origin:
-    :param airline:
-    :return:
-    """
-
-    cur = conn.cursor()
-
-    if window > 13:
-        window = 13
-
-    num_days = get_days_in_month(month, year)
-
-    if day+window > num_days or day-window < 0:
-
-        if day + window > num_days:
-            start_day = day - window
-            start_month = month
-            end_month = month + 1
-            if end_month > 12:
-                end_month = 1
-            end_day = (day+window) - num_days
-
-        else:
-            start_month = month - 1
-            if start_month < 1:
-                start_month = 12
-            start_day = (day-window) + get_days_in_month(start_month, year)
-            end_month = month
-            end_day = day + window
-
-        params, sql = select_query_complex(airline, end_day, end_month, origin, start_day, start_month)
-
-    else:
-        params, sql = method_name(airline, day, month, origin, window)
-    print(params)
-    cur.execute(sql, params)
-    return cur.fetchall()
-
-
-def method_name(airline, day, month, origin, window):
-    if airline:
-        sql = '''SELECT * FROM flight_data
-                     WHERE airline=?
-                     AND origin=?
-                     AND day>?
-                     AND day<?
-                     AND month=?'''
-        params = (airline, origin, (day - window), (day + window), month)
-    else:
-        sql = '''SELECT * FROM flight_data
-                     WHERE origin=?
-                     AND day>?
-                     AND day<?
-                     AND month=?'''
-        params = (origin, (day - window), (day + window), month)
-    return params, sql
-
-
-def select_query_complex(airline, end_day, end_month, origin, start_day, start_month):
-    if airline:
-        sql = '''SELECT * FROM flight_data
-                     WHERE airline=?
-                     AND origin=?
-                     AND day>?
-                     AND month=?
-                     UNION
-                     SELECT * FROM flight_data
-                     WHERE airline=?
-                     AND origin=?
-                     AND day<?
-                     AND month=?'''
-        params = (airline, origin, start_day, start_month, airline, origin, end_day, end_month)
-    else:
-        sql = '''SELECT * FROM flight_data
-                     WHERE origin=?
-                     AND day>?
-                     AND month=?
-                     UNION
-                     SELECT * FROM flight_data
-                     WHERE origin=?
-                     AND day<?
-                     AND month=?'''
-        params = (origin, start_day, start_month, origin, end_day, end_month)
-    return params, sql
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -188,15 +94,17 @@ def add_flight(userId):
     cur = conn.cursor()
     if request.method == 'POST':
 
-        sql = '''INSERT INTO flight_data (airline, origin, destination, year, month, day, sched_hour, sched_min, act_hour, act_min, delayed, user_id)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'''
+        sql = '''INSERT INTO flights (airline, origin, destination, year, month, day, sched_hour, sched_min, delay, delayed, user_id)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?)'''
+        print('hello')
         params = generate_params() + (userId,)
+        print(params)
         cur.execute(sql, params)
         conn.commit()
         print("HERE")
         return redirect(url_for('add_flight', userId=userId))
 
-    cur.execute('''SELECT * FROM flight_data WHERE user_id=?;''', (userId,))
+    cur.execute('''SELECT * FROM flights WHERE user_id=?;''', (userId,))
     rows = cur.fetchall()
     return render_template('add_flight.html', rows=rows, userId=userId)
 
@@ -204,7 +112,7 @@ def add_flight(userId):
 @app.route('/<userId>/<flightId>/deleteFlight', methods=['POST', 'GET'])
 def delete_flight(userId, flightId):
     cur = conn.cursor()
-    sql = '''DELETE FROM flight_data WHERE user_id=? AND flight_id=?;'''
+    sql = '''DELETE FROM flights WHERE user_id=? AND flight_id=?;'''
     params = (userId, flightId)
     cur.execute(sql, params)
     conn.commit()
@@ -215,15 +123,15 @@ def delete_flight(userId, flightId):
 def edit_flight(userId, flightId):
     cur = conn.cursor()
     if request.method == 'POST':
-        sql = '''UPDATE flight_data
-                 SET airline=?, origin=?, destination=?, year=?, month=?, day=?, sched_hour=?, sched_min=?, act_hour=?, act_min=?, delayed=?
+        sql = '''UPDATE flights
+                 SET airline=?, origin=?, destination=?, year=?, month=?, day=?, sched_hour=?, sched_min=?, delay=?, delayed=?
                  WHERE flight_id=?;'''
         params = generate_params() + (flightId,)
         cur.execute(sql, params)
         conn.commit()
         return redirect(url_for('add_flight', userId=userId))
     else:
-        sql_select = '''SELECT * FROM flight_data WHERE flight_id=?;'''
+        sql_select = '''SELECT * FROM flights WHERE flight_id=?;'''
         params_select = (flightId,)
         cur.execute(sql_select, params_select)
         flight = cur.fetchone()
@@ -232,7 +140,7 @@ def edit_flight(userId, flightId):
 
 @app.route('/search', methods=['POST', 'GET'])
 def search_flight():
-    results = None
+    res = None
     indicator = 0
     data = {}
     if request.method == 'POST':
@@ -249,25 +157,57 @@ def search_flight():
         sched_hour = int(dept_date[11:13])
         sched_minute = int(dept_date[14:])
 
-        results = get_flights_in_window(4, day, month, year, origin_airport, airline)
+        window = 4
+        b_month, b_day, f_month, f_day = calc_window(year, month, day, window)
 
-        value = [0] * 24
-        counts = [0] * 24
+        if b_month == f_month:
+            sql = '''SELECT *
+                     FROM flights
+                     WHERE origin = ?
+                     AND airline = ?
+                     AND month = ?
+                     AND day > ?
+                     AND day < ?
+            '''
+            params = (origin_airport, airline, b_month, b_day, f_day)
 
-        for res in results:
-            if res[9] != 'NA' and type(res[10]) is int:
-                delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
-                hour = res[7]
-                value[hour] += delay
-                counts[hour] += 1
+        else:
+            sql = '''SELECT day, sched_hour, AVG(delay)
+                     FROM (
+                         SELECT *
+                         FROM flights
+                         WHERE origin=?
+                         AND airline=?
+                         AND month=?
+                         AND day>?
+                         UNION
+                         SELECT *
+                         FROM flights
+                         WHERE origin=?
+                         AND airline=?
+                         AND month=?
+                         AND day<?
+                     )
+                     GROUP BY day, sched_hour'''
+            params = (origin_airport, airline, b_month, b_day, origin_airport, airline, f_month, f_day)
 
-        for i in range(24):
-            if counts[i] > 0:
-                value[i] /= counts[i]
+        cur.execute(sql, params)
+        res = cur.fetchall()
 
-        indicator = value[sched_hour]
+        # value = [0] * 24
+        # counts = [0] * 24
+        #
+        # # res -> day, hour, delay
+        # for line in res:
+        #     day = line[6]
+        #     hour = line[7]
+        #     delay = line[9]
+        #     value[hour] = delay
 
-    return render_template('search_flight.html', results=results, p_val=indicator, data=data)
+
+        indicator = 0
+
+    return render_template('search_flight.html', results=res, p_val=indicator, data=data)
 
 
 @app.route('/getFig/<origin>/<airline>/<date>')
@@ -280,21 +220,52 @@ def get_fig(origin, airline, date):
     sched_hour = int(date[11:13])
     sched_minute = int(date[14:])
 
-    results = get_flights_in_window(4, day, month, year, origin, airline)
+    window = 4
+    b_month, b_day, f_month, f_day = calc_window(year, month, day, window)
+
+    if b_month == f_month:
+        sql = '''SELECT sched_hour, AVG(delay)
+                 FROM flights
+                 WHERE origin = ?
+                 AND airline = ?
+                 AND month = ?
+                 AND day > ?
+                 AND day < ?
+                 GROUP BY sched_hour
+        '''
+        params = (origin, airline, b_month, b_day, f_day)
+
+    else:
+        sql = '''SELECT sched_hour, AVG(delay)
+                 FROM (
+                     SELECT *
+                     FROM flights
+                     WHERE origin=?
+                     AND airline=?
+                     AND month=?
+                     AND day>?
+                     UNION
+                     SELECT *
+                     FROM flights
+                     WHERE origin=?
+                     AND airline=?
+                     AND month=?
+                     AND day<?
+                 )
+                 GROUP BY sched_hour'''
+        params = (origin, airline, b_month, b_day, origin, airline, f_month, f_day)
+
+    cur.execute(sql, params)
+    res = cur.fetchall()
+    print(res)
 
     value = [0] * 24
-    counts = [0] * 24
 
-    for res in results:
-        if res[9] != 'NA' and type(res[10]) is int:
-            delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
-            hour = res[7]
-            value[hour] += delay
-            counts[hour] += 1
-
-    for i in range(24):
-        if counts[i] > 0:
-            value[i] /= counts[i]
+    # res -> hour, delay
+    for line in res:
+        hour = line[0]
+        delay = line[1]
+        value[hour] = delay
 
     fig, ax = plt.subplots()
     ax.plot(list(range(24)), value)
@@ -319,28 +290,26 @@ def get_fig_2(origin, date):
     sched_hour = int(date[11:13])
     sched_minute = int(date[14:])
 
-    results = get_flights_in_window(4, day, month, year, origin, airline=None)
-    value = [0] * 24
-    counts = [0] * 24
     airline = {}
 
+    sql = '''SELECT airline, AVG(delay)
+             FROM flights
+             WHERE origin = ?
+             AND month = ?
+             AND day = ?
+             GROUP BY airline, day
+    '''
+    params = (origin, month, day)
+    cur.execute(sql, params)
+    res = cur.fetchall()
+
+    # res -> airline, delay
+    for line in res:
+        carrier = line[0]
+        delay = line[1]
+        airline[carrier] = delay
+
     fig, ax = plt.subplots()
-
-    for res in results:
-        if res[9] != 'NA' and type(res[10]) is int and type(res[4]) is int and type(res[5]) is int and type(res[6]) \
-                is int and type(res[7]) is int and type(res[8]) is int:
-            delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
-            hour = res[7]
-            value[hour] += delay
-            counts[hour] += 1
-            if res[1] not in airline:
-                airline[res[1]] = [0, 0]
-            airline[res[1]][0] += delay
-            airline[res[1]][1] += 1
-
-    for carrier in airline:
-        airline[carrier] = airline[carrier][0]/airline[carrier][1]
-    print(airline)
 
     ax.bar(airline.keys(), airline.values())
     ax.set_ylabel('Minutes')
@@ -364,24 +333,52 @@ def get_fig_3(origin, airline, date):
     sched_hour = int(date[11:13])
     sched_minute = int(date[14:])
 
-    window = 4
-    results = get_flights_in_window(window, day, month, year, origin, airline)
-    n = (2 * window) - 1
     airline_dict = {}
+    window = 4
+    b_month, b_day, f_month, f_day = calc_window(year, month, day, window)
+
+    if b_month == f_month:
+        sql = '''SELECT day, AVG(delay)
+                 FROM flights
+                 WHERE origin = ?
+                 AND airline = ?
+                 AND month = ?
+                 AND day > ?
+                 AND day < ?
+                 GROUP BY day
+        '''
+        params = (origin, airline, b_month, b_day, f_day)
+
+    else:
+        sql = '''SELECT day, AVG(delay)
+                 FROM (
+                     SELECT *
+                     FROM flights
+                     WHERE origin=?
+                     AND airline=?
+                     AND month=?
+                     AND day>?
+                     UNION
+                     SELECT *
+                     FROM flights
+                     WHERE origin=?
+                     AND airline=?
+                     AND month=?
+                     AND day<?
+                 )
+                 GROUP BY day'''
+        params = (origin, airline, b_month, b_day, origin, airline, f_month, f_day)
+
+    cur.execute(sql, params)
+    res = cur.fetchall()
+
+    # res -> day, delay
+    for line in res:
+        day = str(line[0])
+        delay = line[1]
+        airline_dict[day] = delay
 
     fig, ax = plt.subplots()
-
-    for res in results:
-        if res[9] != 'NA' and type(res[10]) is int:
-            delay = calc_delay(res[4], res[5], res[6], res[7], res[8], res[9], res[10])
-            day = str(res[6])
-            if day not in airline_dict:
-                airline_dict[day] = [0, 0]
-            airline_dict[day][0] += delay
-            airline_dict[day][1] += 1
-
-    for carrier in airline_dict:
-        airline_dict[carrier] = airline_dict[carrier][0]/airline_dict[carrier][1]
 
     ax.bar(airline_dict.keys(), airline_dict.values())
     ax.set_ylabel('Minutes')
@@ -397,5 +394,5 @@ def get_fig_3(origin, airline, date):
 
 if __name__ == '__main__':
     app.secret_key = 'secret key'
-    conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/flights.db')
+    conn = create_connection('/Users/Max/PycharmProjects/CS411/flights.db')
     app.run()
