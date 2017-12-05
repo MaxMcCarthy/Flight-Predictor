@@ -4,16 +4,28 @@ import sqlite3
 from sqlite3 import Error
 import statsmodels.formula.api as sm
 import datetime
+from CS411 import create_connection
 
 
 def hour_to_factor(x):
+    """
+    turn minutes from 0-59 into factors 1,2,3, or 4
+    :param x: minute variable
+    :return: the factor variable
+    """
     if x < 15:
-        return 1
+        return '<15'
     if x < 30:
-        return 2
+        return '15<x<30'
     if x < 45:
-        return 3
-    return 4
+        return '30<x<45'
+    return '45<x<60'
+
+
+def eliminate_zero(x):
+    if x == 0:
+        return 1
+    return x
 
 
 def day_of_week(x):
@@ -35,11 +47,12 @@ def day_of_week(x):
 
 def create_data_frame(conn):
     """
-
+    accesses database and formulates data for modeling
     :param conn:
-    :return:
+    :return: a dataframe
     """
 
+    # select data
     sql = '''
           SELECT airline, origin, year, month, day, sched_hour, sched_min, delay
           FROM flights
@@ -47,23 +60,29 @@ def create_data_frame(conn):
     cur = conn.cursor()
     cur.execute(sql)
     data = cur.fetchall()
+
+    # create dataframe
     df = pd.DataFrame(data, columns=['airline', 'origin', 'year', 'month', 'day', 'hour', 'min', 'delay'])
+
+    # take every nth observation for ease
     df = df.iloc[::500, :]
+
+    # make minutes into factor
     df['min_cat'] = df['min'].apply(hour_to_factor)
+
+    # change day of month to weekday
     df['weekday'] = df.apply(lambda row: datetime.datetime(row['year'], row['month'], row['day']).weekday(), axis=1)
     df['weekday'] = df['weekday'].apply(day_of_week)
+
+    # remove 0s in delay
+    df['delay'] = df['delay'].apply(eliminate_zero)
+
+    # drop day and year from the dataframe
     df = df.drop(['day', 'year'], axis=1)
+
+
     print("made data!")
     return df
-
-
-def create_connection(db_file):
-    try:
-        conn = sqlite3.connect(db_file, check_same_thread=False)
-        return conn
-    except Error as e:
-        print(e)
-        return None
 
 
 def permute_data(df, x, y):
@@ -89,43 +108,45 @@ def permute_data(df, x, y):
 
     diffs = np.zeros(m)
 
+    # scramble x and y, then take the mean
     for i in range(m):
         samples = np.random.choice(lst, n, replace=False)
         x_s = df.iloc[samples]
         y_s = df.iloc[~samples]
         diffs[i] = (np.mean(x_s['delay']) - np.mean(y_s['delay']))
 
+    # calculate how many of the means were greater than the true mean
     p_val = np.sum(diffs >= true_diff)/float(m)
     print(p_val)
     return p_val
 
 
 def permute_factors():
-    conn = create_connection('/Users/Max/PycharmProjects/Flight-Predictor/flights.db')
+    conn = create_connection('../flights.db')
     df = create_data_frame(conn)
 
-    # # hours
-    # factors = list(range(1,24))
-    # m = len(factors)
-    # num = (m * (m-1))/2
-    # p_vals = np.zeros(num)
-    # count = 0
-    #
-    # for i in range(m-1):
-    #     for j in range(i+1,m):
-    #         a = df.loc[df['hour'] == factors[i]]
-    #         if len(a['delay']) == 0:
-    #             continue
-    #         b = df.loc[df['hour'] == factors[j]]
-    #         if len(b['delay']) == 0:
-    #             continue
-    #         frames = [a,b]
-    #         result = pd.concat(frames)
-    #         p_val = permute_data(result, a, b)
-    #         print(p_val)
-    #         p_vals[count] = p_val
-    #         count += 1
-    # print(p_vals)
+    # hours
+    factors = list(range(1,24))
+    m = len(factors)
+    num = (m * (m-1))/2
+    p_vals = np.zeros(num)
+    count = 0
+
+    for i in range(m-1):
+        for j in range(i+1,m):
+            a = df.loc[df['hour'] == factors[i]]
+            if len(a['delay']) == 0:
+                continue
+            b = df.loc[df['hour'] == factors[j]]
+            if len(b['delay']) == 0:
+                continue
+            frames = [a,b]
+            result = pd.concat(frames)
+            p_val = permute_data(result, a, b)
+            print(p_val)
+            p_vals[count] = p_val
+            count += 1
+    print(p_vals)
 
     # month
     factors = list(range(1, 13))
@@ -158,10 +179,10 @@ def permute_factors():
 
     for i in range(m-1):
         for j in range(i+1,m):
-            a = df.loc[df['day'] == factors[i]]
+            a = df.loc[df['weekday'] == factors[i]]
             if len(a['delay']) == 0:
                 continue
-            b = df.loc[df['day'] == factors[j]]
+            b = df.loc[df['weekday'] == factors[j]]
             if len(b['delay']) == 0:
                 continue
             frames = [a,b]
@@ -203,10 +224,10 @@ def permute_factors():
 
     for i in range(m-1):
         for j in range(i+1,m):
-            a = df.loc[df['min'] == factors[i]]
+            a = df.loc[df['min_cat'] == factors[i]]
             if len(a['delay']) == 0:
                 continue
-            b = df.loc[df['min'] == factors[j]]
+            b = df.loc[df['min_cat'] == factors[j]]
             if len(b['delay']) == 0:
                 continue
             frames = [a,b]
@@ -219,15 +240,81 @@ def permute_factors():
 
 
 def create_model():
-    conn = create_connection('/Users/Max/PycharmProjects/Flight-Predictor/flights.db')
+    conn = create_connection('../flights.db')
     df = create_data_frame(conn)
     result = sm.ols(formula="delay ~ min_cat + hour + airline + weekday + month", data=df).fit()
-    print(result.params)
-    print(result.summary())
+    m1 = sm.ols(formula="np.log(delay) ~ min_cat + hour + airline + weekday + month", data=df).fit()
+    print(m1.params)
+    print(m1.summary())
+    point = df.iloc[[100]]
+    curr_delay = point.iloc[[0]]['delay']
+    point = point.drop(['delay'], axis=1)
+    print(np.square(m1.predict(point) - curr_delay))
+
+
+def cross_validation(df):
+    n = len(df['delay'])
+
+    e1 = e2 = e3 = e4 = np.zeros(n)
+    min_cats = df['min_cat'].unique()
+    hours = df['hour'].unique()
+    airlines = df['airline'].unique()
+    weekdays = df['weekday'].unique()
+    months = df['month'].unique()
+
+    for i in range(n):
+        sample_df = df.iloc[[~i]]
+        point = df.iloc[[i]]
+        curr_delay = point.iloc[[0]]['delay']
+        point = point.drop(['delay'], axis=1)
+
+        m1 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
+                            "C(hour, levels=hours) + "
+                            "C(airline, levels=airlines) + "
+                            "C(weekday, levels=weekdays) + "
+                            "C(month, levels=months)",
+                            data=sample_df).fit()
+        e1[i] = np.square(m1.predict(point) - curr_delay)
+
+        # m2 = sm.ols(formula="np.log(delay) ~ C(min_cat, levels=min_cats) + "
+        #                     "C(hour, levels=hours) + "
+        #                     "C(airline, levels=airlines) + "
+        #                     "C(weekday, levels=weekdays) + "
+        #                     "C(month, levels=months)",
+        #                     data=sample_df).fit()
+        # e2[i] = np.square(m2.predict(point) - curr_delay)
+
+        m3 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
+                            "C(hour, levels=hours) + "
+                            "C(airline, levels=airlines) + "
+                            "C(weekday, levels=weekdays)",
+                            data=sample_df).fit()
+        e3[i] = np.square(m3.predict(point) - curr_delay)
+
+        m4 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
+                            "C(hour, levels=hours) + "
+                            "C(airline, levels=airlines) + "
+                            "C(month, levels=months)",
+                            data=sample_df).fit()
+        e4[i] = np.square(m4.predict(point) - curr_delay)
+
+        if i % 500 == 0:
+            print(i//500)
+
+    err1 = np.mean(e1)
+    err2 = np.mean(e2)
+    err3 = np.mean(e3)
+    err4 = np.mean(e4)
+    print(err1, err2, err3, err4)
+
+    return err1, err2, err3, err4
 
 
 if __name__ == '__main__':
     #conn = create_connection('/Users/Max/PycharmProjects/Flight-Predictor/flights.db')
+    #conn = create_connection('../test.db')
     #create_data_frame(conn)
-    #permute_factors()
-    create_model()
+    permute_factors()
+    #create_model()
+    #df = create_data_frame(conn)
+    #cross_validation(df)

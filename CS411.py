@@ -24,7 +24,7 @@ def create_connection(db_file):
         return None
 
 
-conn = create_connection('/Users/Max/PycharmProjects/Flight-Predictor/flights.db')
+conn = create_connection('flights.db')
 
 
 def generate_params():
@@ -394,5 +394,5 @@ def get_fig_3(origin, airline, date):
 
 if __name__ == '__main__':
     app.secret_key = 'secret key'
-    conn = create_connection('/Users/Max/PycharmProjects/Flight-Predictor/flights.db')
+    conn = create_connection('flights.db')
     app.run()
