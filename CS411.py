@@ -24,7 +24,7 @@ def create_connection(db_file):
         return None
 
 
-conn = create_connection('flights.db')
+conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/test.db')
 
 
 def generate_params():
@@ -138,8 +138,8 @@ def edit_flight(userId, flightId):
         return render_template('edit_flight.html', userId=userId, flightId=flightId, flight=flight)
 
 
-@app.route('/search', methods=['POST', 'GET'])
-def search_flight():
+@app.route('/<userId>/search', methods=['POST', 'GET'])
+def search_flight(userId):
     res = None
     indicator = 0
     data = {}
@@ -207,7 +207,7 @@ def search_flight():
 
         indicator = 0
 
-    return render_template('search_flight.html', results=res, p_val=indicator, data=data)
+    return render_template('search_flight.html', results=res, p_val=indicator, data=data, userId=userId)
 
 
 @app.route('/getFig/<origin>/<airline>/<date>')
@@ -394,5 +394,5 @@ def get_fig_3(origin, airline, date):
 
 if __name__ == '__main__':
     app.secret_key = 'secret key'
-    conn = create_connection('flights.db')
+    conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/test.db')
     app.run()

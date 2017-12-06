@@ -18,7 +18,7 @@
             <p align="right"><a href="/">Sign Out</a></p>
         </div>
         <div class="jumbotron">
-            <button id="search" onclick="location.href='{{ url_for('search_flight') }}'" type="button">Search Flight</button>
+            <button id="search" onclick="location.href='{{ url_for('search_flight', userId=userId) }}'" type="button">Search Flight</button>
             <h1>Add Flight</h1>
 
             <form class="form-signin" action="{{ url_for('add_flight', userId=userId) }}" method="POST">
