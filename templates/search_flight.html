@@ -36,8 +36,9 @@
 
 
         {% if results != None %}
-        <h5>Based on similar flights and your flight information, your flight will be delayed by {{ p_val }} minutes.</h5>
-        <h5>{{ data['date'] }}</h5>
+        <button onclick="myFunction()" type="button">Generate Delay Time</button>
+        <ol id="num"></ol>
+        <h5>Based on similar flights and your flight information, your flight has a  {{ p_val }}% chance of being delayed.</h5>
 
         <div>
             <h3 id="flights">Similar Flights</h3>
@@ -75,4 +76,11 @@
         </footer>
     </div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    function myFunction(){
+        window.alert("It may take a couple of seconds to generate your wait time!");
+        $("#num").prepend($("<div>").load( "{{ url_for('generate_wait_time', airline=data['airline'], date=data['date']) }}" ));
+    }
+</script>
 </html>

@@ -4,7 +4,7 @@ import sqlite3
 from sqlite3 import Error
 import statsmodels.formula.api as sm
 import datetime
-from CS411 import create_connection
+#from CS411 import create_connection
 
 
 def hour_to_factor(x):
@@ -149,8 +149,8 @@ def permute_data(df, x, y):
     return p_val
 
 
-def permute_factors():
-    conn = create_connection('../flights.db')
+def permute_factors(conn):
+    #conn = create_connection('../flights.db')
     df = create_data_frame(conn)
 
     # hours
@@ -267,8 +267,8 @@ def permute_factors():
     print(p_vals)
 
 
-def create_model():
-    conn = create_connection('../test.db')
+def create_model(conn):
+    #conn = create_connection('../test.db')
     df = create_data_frame(conn)
     result = sm.ols(formula="delay ~ min_cat + hour + airline + weekday + month", data=df).fit()
     m1 = sm.ols(formula="delay ~ min_cat + hour + airline + weekday + month", data=df).fit()
@@ -350,10 +350,11 @@ def cross_validation(df):
 
 if __name__ == '__main__':
     #conn = create_connection('/Users/Max/PycharmProjects/Flight-Predictor/flights.db')
-    conn = create_connection('../test.db')
+    #conn = create_connection('../test.db')
     #create_data_frame(conn)
     #permute_factors()
     #create_model()
     #df = create_data_frame(conn)
     #cross_validation(df)
-    print(calc_wait_time(conn, 4, 23, 15, 37, 2017, 'DL'))
+    #print(calc_wait_time(conn, 4, 23, 15, 37, 2017, 'DL'))
+    print()

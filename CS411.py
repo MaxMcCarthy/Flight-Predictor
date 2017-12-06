@@ -2,13 +2,14 @@ import base64
 from io import BytesIO
 
 import io
-from flask import Flask, render_template, request, redirect, url_for, send_file, flash
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash, jsonify
 import sqlite3
 from sqlite3 import Error
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_template import FigureCanvas
 from Tools.tools import calc_window, calc_act, get_days_in_month
 import numpy as np
+from Tools.statistics import calc_wait_time
 
 app = Flask(__name__)
 
@@ -24,7 +25,7 @@ def create_connection(db_file):
         return None
 
 
-conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/test.db')
+conn = create_connection('test.db')
 
 
 def generate_params():
@@ -73,16 +74,25 @@ def create_user():
         user_name = request.form['username']
         pw = request.form['password']
 
-        cur.execute('''INSERT INTO user (username, password)
-                 VALUES (?, ?)''', (user_name, pw))
+        # cur.execute('''DROP TRIGGER IF EXISTS after_insert''')
+        # cur.execute('''CREATE TRIGGER IF NOT EXISTS after_insert AFTER INSERT ON user
+        #                BEGIN
+        #                SELECT user_id FROM user AS u WHERE u.username=NEW.username AND u.password=NEW.password;
+        #                END;''')
         # conn.commit()
-        # cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
-        cur.execute('''CREATE TRIGGER after_insert AFTER INSERT ON user
-                       BEGIN
-                       SELECT user_id FROM user WHERE username=user_name AND password=pw;
-                       END;''')
+
+        cur.execute('''INSERT INTO user (username, password)
+                 VALUES (?, ?);''', (user_name, pw))
         conn.commit()
+        cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
+        # cur.execute('''CREATE TRIGGER IF NOT EXISTS after_insert AFTER INSERT ON user
+        #                BEGIN
+        #                SELECT user_id FROM user AS u WHERE u.username=username AND u.password=password;
+        #                END;''')
+        #conn.commit()
         rows = cur.fetchone()
+        conn.commit()
+
         print(rows)
         return redirect(url_for('add_flight', userId=rows[0]))
     else:
@@ -95,7 +105,7 @@ def add_flight(userId):
     if request.method == 'POST':
 
         sql = '''INSERT INTO flights (airline, origin, destination, year, month, day, sched_hour, sched_min, delay, delayed, user_id)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?)'''
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?);'''
         print('hello')
         params = generate_params() + (userId,)
         print(params)
@@ -138,8 +148,8 @@ def edit_flight(userId, flightId):
         return render_template('edit_flight.html', userId=userId, flightId=flightId, flight=flight)
 
 
-@app.route('/<userId>/search', methods=['POST', 'GET'])
-def search_flight(userId):
+@app.route('/search', methods=['POST', 'GET'])
+def search_flight():
     res = None
     indicator = 0
     data = {}
@@ -172,7 +182,7 @@ def search_flight(userId):
             params = (origin_airport, airline, b_month, b_day, f_day)
 
         else:
-            sql = '''SELECT day, sched_hour, AVG(delay)
+            sql = '''SELECT *
                      FROM (
                          SELECT *
                          FROM flights
@@ -187,27 +197,27 @@ def search_flight(userId):
                          AND airline=?
                          AND month=?
                          AND day<?
-                     )
-                     GROUP BY day, sched_hour'''
+                     )'''
             params = (origin_airport, airline, b_month, b_day, origin_airport, airline, f_month, f_day)
 
         cur.execute(sql, params)
         res = cur.fetchall()
 
-        # value = [0] * 24
-        # counts = [0] * 24
+        count = 0
+        nums = 0
         #
         # # res -> day, hour, delay
-        # for line in res:
-        #     day = line[6]
-        #     hour = line[7]
-        #     delay = line[9]
-        #     value[hour] = delay
+        for line in res:
+            if line[10] == 1:
+                count += 1
+            nums += 1
 
+        count /= float(nums)
+        count *= 100
 
-        indicator = 0
+        indicator = count
 
-    return render_template('search_flight.html', results=res, p_val=indicator, data=data, userId=userId)
+    return render_template('search_flight.html', results=res, p_val=indicator, data=data)
 
 
 @app.route('/getFig/<origin>/<airline>/<date>')
@@ -392,7 +402,22 @@ def get_fig_3(origin, airline, date):
     return send_file(img2, mimetype="image/png")
 
 
+@app.route('/generateWaitTime/<airline>/<date>')
+def generate_wait_time(airline, date):
+    date = str(date)
+    year = int(date[0:4])
+    month = int(date[5:7])
+    day = int(date[8:10])
+    hour = int(date[11:13])
+    minute = int(date[14:])
+    wait = calc_wait_time(conn, month, day, hour, minute, year, airline)
+    wait = wait.to_frame('count')
+    print(wait['count'].iloc[0])
+    print(wait)
+    return 'Predicted Wait Time = ' + str(wait['count'].iloc[0]//1) + ' Minutes'
+
+
 if __name__ == '__main__':
     app.secret_key = 'secret key'
-    conn = create_connection('/Users/mariannehuang/cs411/Flight-Predictor/test.db')
+    conn = create_connection('test.db')
     app.run()
