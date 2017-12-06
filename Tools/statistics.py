@@ -45,7 +45,7 @@ def day_of_week(x):
         return 'Sat'
 
 
-def month(x):
+def ret_month(x):
     if x == 1:
         return 'Jan'
     if x == 2:
@@ -80,7 +80,7 @@ def create_data_frame(conn):
 
     # select data
     sql = '''
-          SELECT airline, origin, year, month, day, sched_hour, sched_min, delay
+          SELECT airline, year, month, day, sched_hour, sched_min, delay
           FROM flights
           '''
     cur = conn.cursor()
@@ -88,10 +88,10 @@ def create_data_frame(conn):
     data = cur.fetchall()
 
     # create dataframe
-    df = pd.DataFrame(data, columns=['airline', 'origin', 'year', 'month', 'day', 'hour', 'min', 'delay'])
+    df = pd.DataFrame(data, columns=['airline', 'year', 'month', 'day', 'hour', 'min', 'delay'])
 
     # take every nth observation for ease
-    df = df.iloc[::1, :]
+    df = df.iloc[::100, :]
 
     # make minutes into factor
     df['min_cat'] = df['min'].apply(hour_to_factor)
@@ -104,7 +104,7 @@ def create_data_frame(conn):
     #df['delay'] = df['delay'].apply(eliminate_zero)
 
     # change month to factor variable
-    df['month'] = df['month'].apply(month)
+    df['month'] = df['month'].apply(ret_month)
 
     # drop day and year from the dataframe
     df = df.drop(['day', 'year'], axis=1)
@@ -268,10 +268,10 @@ def permute_factors():
 
 
 def create_model():
-    conn = create_connection('../flights.db')
+    conn = create_connection('../test.db')
     df = create_data_frame(conn)
     result = sm.ols(formula="delay ~ min_cat + hour + airline + weekday + month", data=df).fit()
-    m1 = sm.ols(formula="np.log(delay) ~ min_cat + hour + airline + weekday + month", data=df).fit()
+    m1 = sm.ols(formula="delay ~ min_cat + hour + airline + weekday + month", data=df).fit()
     print(m1.params)
     print(m1.summary())
     point = df.iloc[[100]]
@@ -280,18 +280,35 @@ def create_model():
     print(np.square(m1.predict(point) - curr_delay))
 
 
+def calc_wait_time(conn, month, day, hour, minute, year, airline):
+    df = create_data_frame(conn)
+    result = sm.ols(formula="delay ~ min_cat + hour + airline + weekday + month", data=df).fit()
+    data = (airline, ret_month(month), day_of_week(datetime.datetime(year, month, day).weekday()), hour, hour_to_factor(minute))
+    print(data)
+    point = pd.DataFrame([data], columns=['airline', 'month', 'weekday', 'hour', 'min_cat'])
+    return result.predict(point)
+
+
 def cross_validation(df):
+    # length of the dataframe
     n = len(df['delay'])
 
+    # error vectors
     e1 = np.zeros(n)
     e2 = np.zeros(n)
     e3 = np.zeros(n)
+
+    # get factors for factor variables
     min_cats = df['min_cat'].unique()
     hours = df['hour'].unique()
     airlines = df['airline'].unique()
     weekdays = df['weekday'].unique()
     months = df['month'].unique()
 
+    # leave one out cross validation
+    # set one test point, the rest are training points
+    # measure model's accuracy predicting known test point
+    # store in e for error
     for i in range(n):
         sample_df = df.iloc[[~i]]
         point = df.iloc[[i]]
@@ -300,9 +317,9 @@ def cross_validation(df):
 
         m1 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
                             "C(hour, levels=hours) + "
-                            "C(airline, levels=airlines) + "
                             "C(weekday, levels=weekdays) + "
-                            "C(month, levels=months)",
+                            "C(month, levels=months) + "
+                            "C(airline, levels=airlines)",
                             data=sample_df).fit()
         e1[i] = np.square(m1.predict(point) - curr_delay)
 
@@ -337,5 +354,6 @@ if __name__ == '__main__':
     #create_data_frame(conn)
     #permute_factors()
     #create_model()
-    df = create_data_frame(conn)
-    cross_validation(df)
+    #df = create_data_frame(conn)
+    #cross_validation(df)
+    print(calc_wait_time(conn, 4, 23, 15, 37, 2017, 'DL'))
