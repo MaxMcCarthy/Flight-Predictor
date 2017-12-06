@@ -45,6 +45,32 @@ def day_of_week(x):
         return 'Sat'
 
 
+def month(x):
+    if x == 1:
+        return 'Jan'
+    if x == 2:
+        return 'Feb'
+    if x == 3:
+        return 'Mar'
+    if x == 4:
+        return 'Apr'
+    if x == 5:
+        return 'May'
+    if x == 6:
+        return 'Jun'
+    if x == 7:
+        return 'Jly'
+    if x == 8:
+        return 'Aug'
+    if x == 9:
+        return 'Sep'
+    if x == 10:
+        return 'Oct'
+    if x == 11:
+        return 'Nov'
+    return 'Dec'
+
+
 def create_data_frame(conn):
     """
     accesses database and formulates data for modeling
@@ -65,7 +91,7 @@ def create_data_frame(conn):
     df = pd.DataFrame(data, columns=['airline', 'origin', 'year', 'month', 'day', 'hour', 'min', 'delay'])
 
     # take every nth observation for ease
-    df = df.iloc[::500, :]
+    df = df.iloc[::1, :]
 
     # make minutes into factor
     df['min_cat'] = df['min'].apply(hour_to_factor)
@@ -75,11 +101,13 @@ def create_data_frame(conn):
     df['weekday'] = df['weekday'].apply(day_of_week)
 
     # remove 0s in delay
-    df['delay'] = df['delay'].apply(eliminate_zero)
+    #df['delay'] = df['delay'].apply(eliminate_zero)
+
+    # change month to factor variable
+    df['month'] = df['month'].apply(month)
 
     # drop day and year from the dataframe
     df = df.drop(['day', 'year'], axis=1)
-
 
     print("made data!")
     return df
@@ -255,7 +283,9 @@ def create_model():
 def cross_validation(df):
     n = len(df['delay'])
 
-    e1 = e2 = e3 = e4 = np.zeros(n)
+    e1 = np.zeros(n)
+    e2 = np.zeros(n)
+    e3 = np.zeros(n)
     min_cats = df['min_cat'].unique()
     hours = df['hour'].unique()
     airlines = df['airline'].unique()
@@ -276,27 +306,19 @@ def cross_validation(df):
                             data=sample_df).fit()
         e1[i] = np.square(m1.predict(point) - curr_delay)
 
-        # m2 = sm.ols(formula="np.log(delay) ~ C(min_cat, levels=min_cats) + "
-        #                     "C(hour, levels=hours) + "
-        #                     "C(airline, levels=airlines) + "
-        #                     "C(weekday, levels=weekdays) + "
-        #                     "C(month, levels=months)",
-        #                     data=sample_df).fit()
-        # e2[i] = np.square(m2.predict(point) - curr_delay)
-
-        m3 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
+        m2 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
                             "C(hour, levels=hours) + "
                             "C(airline, levels=airlines) + "
                             "C(weekday, levels=weekdays)",
                             data=sample_df).fit()
-        e3[i] = np.square(m3.predict(point) - curr_delay)
+        e2[i] = np.square(m2.predict(point) - curr_delay)
 
-        m4 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
+        m3 = sm.ols(formula="delay ~ C(min_cat, levels=min_cats) + "
                             "C(hour, levels=hours) + "
                             "C(airline, levels=airlines) + "
                             "C(month, levels=months)",
                             data=sample_df).fit()
-        e4[i] = np.square(m4.predict(point) - curr_delay)
+        e3[i] = np.square(m3.predict(point) - curr_delay)
 
         if i % 500 == 0:
             print(i//500)
@@ -304,17 +326,16 @@ def cross_validation(df):
     err1 = np.mean(e1)
     err2 = np.mean(e2)
     err3 = np.mean(e3)
-    err4 = np.mean(e4)
-    print(err1, err2, err3, err4)
+    print(err1, err2, err3)
 
-    return err1, err2, err3, err4
+    return err1, err2, err3
 
 
 if __name__ == '__main__':
     #conn = create_connection('/Users/Max/PycharmProjects/Flight-Predictor/flights.db')
-    #conn = create_connection('../test.db')
+    conn = create_connection('../test.db')
     #create_data_frame(conn)
-    permute_factors()
+    #permute_factors()
     #create_model()
-    #df = create_data_frame(conn)
-    #cross_validation(df)
+    df = create_data_frame(conn)
+    cross_validation(df)
