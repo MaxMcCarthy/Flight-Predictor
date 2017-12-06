@@ -82,7 +82,7 @@ def create_user():
         # conn.commit()
 
         cur.execute('''INSERT INTO user (username, password)
-                 VALUES (?, ?);''', (user_name, pw))
+                 VALUES (?, ?)''', (user_name, pw))
         conn.commit()
         cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
         # cur.execute('''CREATE TRIGGER IF NOT EXISTS after_insert AFTER INSERT ON user

@@ -34,7 +34,7 @@
                 <input type = "text" name = "delay" value="{{ flight[9] }}"><br>
 
                 <br>Delayed
-                <input type = "checkbox" name = "delayed" {{ "checked" if flight[11]==1 or flight[11]=="on"}}><br>
+                <input type = "checkbox" name = "delayed" {{ "checked" if flight[10]==1 }}><br>
 
                 <input type = "submit" value = "Save" />
                 <td><button onclick="location.href='{{ url_for('add_flight', userId=userId) }}'" type="button">Cancel</button></td><br>
