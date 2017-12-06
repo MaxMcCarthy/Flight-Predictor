@@ -74,22 +74,11 @@ def create_user():
         user_name = request.form['username']
         pw = request.form['password']
 
-        # cur.execute('''DROP TRIGGER IF EXISTS after_insert''')
-        # cur.execute('''CREATE TRIGGER IF NOT EXISTS after_insert AFTER INSERT ON user
-        #                BEGIN
-        #                SELECT user_id FROM user AS u WHERE u.username=NEW.username AND u.password=NEW.password;
-        #                END;''')
-        # conn.commit()
-
         cur.execute('''INSERT INTO user (username, password)
                  VALUES (?, ?)''', (user_name, pw))
         conn.commit()
         cur.execute('''SELECT user_id FROM user WHERE username=? AND password=?;''', (user_name, pw))
-        # cur.execute('''CREATE TRIGGER IF NOT EXISTS after_insert AFTER INSERT ON user
-        #                BEGIN
-        #                SELECT user_id FROM user AS u WHERE u.username=username AND u.password=password;
-        #                END;''')
-        #conn.commit()
+
         rows = cur.fetchone()
         conn.commit()
 
