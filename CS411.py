@@ -148,8 +148,8 @@ def edit_flight(userId, flightId):
         return render_template('edit_flight.html', userId=userId, flightId=flightId, flight=flight)
 
 
-@app.route('/search', methods=['POST', 'GET'])
-def search_flight():
+@app.route('/<userId>/search', methods=['POST', 'GET'])
+def search_flight(userId):
     res = None
     indicator = 0
     data = {}
@@ -217,7 +217,7 @@ def search_flight():
 
         indicator = count
 
-    return render_template('search_flight.html', results=res, p_val=indicator, data=data)
+    return render_template('search_flight.html', results=res, p_val=indicator, data=data, userId=userId)
 
 
 @app.route('/getFig/<origin>/<airline>/<date>')
