@@ -18,6 +18,20 @@ def create_connection(db_file):
 
 
 def create_flight_table(conn):
+    cur = conn.cursor()
+    sql = '''
+          DROP TRIGGER IF EXISTS validateDate
+          '''
+    cur.execute(sql)
+    sql = '''
+          CREATE TRIGGER IF NOT EXISTS validateDate
+          BEFORE INSERT ON flights
+          WHEN NEW.year < 1903 OR NEW.month <= 0 OR NEW.day <= 0
+          BEGIN
+          SELECT RAISE(ABORT, 'Year, month, and day must be greater than 0.');
+          END;
+          '''
+    cur.execute(sql)
     sql = '''
           CREATE TABLE IF NOT EXISTS flights (
             flight_id   INTEGER        PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +48,6 @@ def create_flight_table(conn):
             user_id     INTEGER
         );
         '''
-    cur = conn.cursor()
     cur.execute(sql)
     conn.commit()
 
@@ -223,4 +236,4 @@ if __name__ == '__main__':
     #create_test_environment('test.db', '/Users/Max/Downloads/2007.csv', 5)
     #create_normal_environment('flights.db', '/Users/Max/Downloads/2007.csv')
     conn = create_connection('test.db')
-    create_wait_view(conn)
+    create_flight_table(conn)

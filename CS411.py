@@ -4,7 +4,7 @@ from io import BytesIO
 import io
 from flask import Flask, render_template, request, redirect, url_for, send_file, flash, jsonify
 import sqlite3
-from sqlite3 import Error
+from sqlite3 import Error, IntegrityError
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_template import FigureCanvas
 from Tools.tools import calc_window, calc_act, get_days_in_month
@@ -98,8 +98,11 @@ def add_flight(userId):
         print('hello')
         params = generate_params() + (userId,)
         print(params)
-        cur.execute(sql, params)
-        conn.commit()
+        try:
+            cur.execute(sql, params)
+            conn.commit()
+        except IntegrityError as e:
+            return str(e)
         print("HERE")
         return redirect(url_for('add_flight', userId=userId))
 
@@ -142,6 +145,7 @@ def search_flight(userId):
     res = None
     indicator = 0
     data = {}
+    security_wait = []
     if request.method == 'POST':
         cur = conn.cursor()
         airline = request.form['airline'].upper()
@@ -194,7 +198,7 @@ def search_flight(userId):
 
         count = 0
         nums = 0
-        #
+
         # # res -> day, hour, delay
         for line in res:
             if line[10] == 1:
@@ -206,7 +210,21 @@ def search_flight(userId):
 
         indicator = count
 
-    return render_template('search_flight.html', results=res, p_val=indicator, data=data, userId=userId)
+        # find security wait time, if it exists
+        sql = '''SELECT f.origin, f.year, f.month, f.day, f.sched_hour, f.sched_min, f.delay, f.delayed, f.user_id, w.avg_wait, w.avg_max_wait
+                 FROM flights as f
+                 JOIN avg_waits as w
+                 ON f.origin = w.airport AND f.month = w.month AND f.day = w.day AND f.sched_hour = w.hour
+                 WHERE f.origin = ?
+                 AND f.month = ?
+                 AND f.day = ?
+                 AND f.sched_hour = ?
+        '''
+        params = (origin_airport, month, day, sched_hour)
+        cur.execute(sql, params)
+        security_wait = cur.fetchone()
+
+    return render_template('search_flight.html', results=res, p_val=indicator, data=data, userId=userId, security=security_wait)
 
 
 @app.route('/getFig/<origin>/<airline>/<date>')
@@ -403,7 +421,7 @@ def generate_wait_time(airline, date):
     wait = wait.to_frame('count')
     print(wait['count'].iloc[0])
     print(wait)
-    return 'Predicted Wait Time = ' + str(wait['count'].iloc[0]//1) + ' Minutes'
+    return 'Predicted Wait Time: ' + str(wait['count'].iloc[0]//1) + ' Minutes'
 
 
 if __name__ == '__main__':

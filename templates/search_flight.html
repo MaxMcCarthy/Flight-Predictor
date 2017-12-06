@@ -21,13 +21,13 @@
 
             <form class="form-signin" action="{{ url_for('search_flight', userId=userId) }}" method="POST">
                 <br>Airline
-                <input type = "text" name = "airline" autofocus="true"><br>
+                <input type = "text" name = "airline" autofocus="true" value="{% if data != {} %}{{data['airline']}}{% endif %}"><br>
 
                 <br>Origin Airport
-                <input type = "text" name = "origin_airport"><br>
+                <input type = "text" name = "origin_airport" value="{% if data != {} %}{{data['origin']}}{% endif %}"><br>
 
                 <br>Date of Departure
-                <input type = "datetime-local" name = "dept_date"><br>
+                <input type = "datetime-local" name = "dept_date" value="{% if data != {} %}{{data['date']}}{% endif %}"><br>
 
                 <input type = "submit" value = "Search" /><br>
             </form>
@@ -36,9 +36,31 @@
 
 
         {% if results != None %}
-        <button onclick="myFunction()" type="button">Generate Delay Time</button>
-        <ol id="num"></ol>
-        <h5>Based on similar flights and your flight information, your flight has a  {{ p_val }}% chance of being delayed.</h5>
+            <div>
+            <h3 id="data">Results</h3>
+                <table border="1">
+                    <tr>
+                        <td>Chance of Delay</td>
+                        <td>{{ p_val }}%</td>
+                    </tr>
+                    {% if security != [] %}
+                    <tr>
+                        <td>Security Wait Time</td>
+                        <td>{{security[9]}} Minutes</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td><button onclick="myFunction()" type="button">Predict Delay Time</button></td>
+                        <td id="num"><div id="filler"></div></td>
+                    </tr>
+                </table>
+            </div>
+        <!--<button onclick="myFunction()" type="button">Generate Delay Time</button>-->
+        <!--<ol id="num"></ol>-->
+        <!--<h5>Based on similar flights and your flight information, your flight has a  {{ p_val }}% chance of being delayed.</h5>-->
+        <!--{% if security != [] %}-->
+            <!--<h5>Based on historical data, the average wait time for security check at {{data['origin']}} is {{security[4]}} minutes.</h5>-->
+        <!--{% endif %}-->
 
         <div>
             <h3 id="flights">Similar Flights</h3>
@@ -80,7 +102,7 @@
 <script>
     function myFunction(){
         window.alert("It may take a couple of seconds to generate your wait time!");
-        $("#num").prepend($("<div>").load( "{{ url_for('generate_wait_time', airline=data['airline'], date=data['date']) }}" ));
+        $("#num").html($("<div>").load( "{{ url_for('generate_wait_time', airline=data['airline'], date=data['date']) }}" ));
     }
 </script>
 </html>
