@@ -41,13 +41,13 @@ ii. Advanced
 
 Advanced Techniques
 
-Triggers
-display a user's flight after it's been added to the database
-Prepared Statements
-used to insert (i.e. INSERT INTO user VALUES(?, ?))
-Compound Statements
-queries with multiple components
-Constraints
-when creating tables (specify NOT NULL for fields)
-Views
-get info on average wait times
+- Triggers
+  - display a user's flight after it's been added to the database
+- Prepared Statements
+  - used to insert (i.e. INSERT INTO user VALUES(?, ?))
+- Compound Statements
+  - queries with multiple components
+- Constraints
+  - when creating tables (specify NOT NULL for fields)
+- Views
+  - get info on average wait times
