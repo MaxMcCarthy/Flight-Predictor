@@ -1,18 +1,18 @@
 # Flight-Predictor
 
-Description:
+## Description:
 
 Flight Predictor will predict whether or not a flight gets delayed. It will also predict the user's wait time in security.
 
-Usefulness:
+## Usefulness:
 
 Our application will help users put in their real flight data to predict whether it will get delayed. This will give users an idea of what to expect from their flight. Users will also be able to visualize heavy traffic airlines and times of the day. 
 
-Dataset:
+## Dataset:
 
 We will be getting our flight data from the Bureau of Transportation Statistics. We will keep track of a flight's airline, month, day of the month, day of the week, flight delay time, reason for delay (i.e. weather, security, etc), and origin and destination airports. We will be getting our airport wait time data from the US Customs and Border Protection Airport Wait Times dataset and will keep track of the origin airport, airline, average wait time, max wait time, and the hour of day.
 
-Functionality:
+## Functionality:
 
 i. Basic
 
@@ -39,7 +39,7 @@ ii. Advanced
   - The predicted delay for the user's flight's airline for 3 +/- days from the specified date
   - The predicted delay for every airline on the user-specified date
 
-Advanced Techniques
+## Advanced Techniques
 
 - Triggers
   - display a user's flight after it's been added to the database
@@ -53,6 +53,6 @@ Advanced Techniques
   - get info on average wait times
   
 
-Initial Project Demo
+## Initial Project Demo
 
 [YOUTUBE DEMO LINK](https://www.youtube.com/watch?v=afA4FcrephM&feature=youtu.be)
