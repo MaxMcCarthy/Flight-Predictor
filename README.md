@@ -51,3 +51,8 @@ Advanced Techniques
   - when creating tables (specify NOT NULL for fields)
 - Views
   - get info on average wait times
+  
+
+Initial Project Demo
+
+[YOUTUBE DEMO LINK](https://www.youtube.com/watch?v=afA4FcrephM&feature=youtu.be)
