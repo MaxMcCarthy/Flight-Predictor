@@ -16,32 +16,28 @@ Functionality:
 
 i. Basic
 
-User Profiles
-Add new flights
-airline
-origin and destination airports
-scheduled departure time
-actual departure time
-whether or not the flight was delayed
-Display all of the user's flights 
-Basic login authentication
-User has ability to edit and delete flights 
-Flight Search
-All flights similar to the user's specified flight
-based on airline, origin airport, date
-Display to users the % chance that their flights will get delayed
-Wait Times
-Display to users the predicted wait time at the airport on the specified day
+- User Profiles
+  - Add new flights
+  - Specify airline, origin and destination airports, scheduled departure time, actual departure time, whether or not the flight was delayed
+  - Display all of the user's flights 
+  - Basic login authentication
+  - User has ability to edit and delete flights 
+- Flight Search
+  - All flights similar to the user's specified flight based on airline, origin airport, date
+  - Display to users the % chance that their flights will get delayed
+- Wait Times
+  - Display to users the predicted wait time at the airport on the specified day
 
 ii. Advanced
 
-Predict whether a flight will get delayed
-User inputs flight information
-Use statistical methods such as permutation testing and cross-validation to decide whether or not the flight will be delayed 
-Data Plots
-The predicted delay for the user's flight's airline per hour
-The predicted delay for the user's flight's airline for 3 +/- days from the specified date
-The predicted delay for every airline on the user-specified date
+- Predict whether a flight will get delayed
+  - User inputs flight information
+  - Use statistical methods such as permutation testing and cross-validation to select model for predicting delay time
+  - Use best model to predict and display delay time
+- Data Plots
+  - The predicted delay for the user's flight's airline per hour
+  - The predicted delay for the user's flight's airline for 3 +/- days from the specified date
+  - The predicted delay for every airline on the user-specified date
 
 Advanced Techniques
 
