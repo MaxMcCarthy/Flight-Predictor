@@ -35,9 +35,9 @@ ii. Advanced
   - Use statistical methods such as permutation testing and cross-validation to select model for predicting delay time
   - Use best model to predict and display delay time
 - Data Plots
-  - The predicted delay for the user's flight's airline per hour
-  - The predicted delay for the user's flight's airline for 3 +/- days from the specified date
-  - The predicted delay for every airline on the user-specified date
+  - The average delay for the user's airline per hour at departing airport
+  - The average delay for the user's airline 3 +/- days from the specified date
+  - The average delay for every airline on the user-specified date at departing airport
 
 ## Advanced Techniques
 
