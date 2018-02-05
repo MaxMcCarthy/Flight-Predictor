@@ -50,7 +50,7 @@ ii. Advanced
 - Constraints
   - when creating tables (specify NOT NULL for fields)
 - Views
-  - get info on average wait times
+  - average wait times in security lines
   
 
 ## Initial Project Demo
